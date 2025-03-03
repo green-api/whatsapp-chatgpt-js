@@ -1,3 +1,7 @@
+**WhatsApp Bot Framework**
+
+***
+
 # whatsapp-chatgpt-a# WhatsApp GPT Bot Library
 
 A modern, state-based WhatsApp bot library with OpenAI GPT integration, built on top of GREEN-API by
