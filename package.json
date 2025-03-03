@@ -1,0 +1,53 @@
+{
+  "name": "@green-api/whatsapp-chatgpt",
+  "version": "1.0.0",
+  "description": "WhatsApp Bot Library using OpenAI's GPT",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "docs": "typedoc",
+    "build": "tsc",
+    "watch": "tsc -w",
+    "clean": "rimraf dist",
+    "prebuild": "npm run clean",
+    "prepare": "npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/green-api/whatsapp-chatgpt-js.git"
+  },
+  "keywords": [
+    "whatsapp",
+    "bot",
+    "api",
+    "framework",
+    "green-api",
+    "chat",
+    "messaging",
+    "library",
+    "AI",
+    "openai",
+    "gpt",
+    "chatgpt"
+  ],
+  "author": "GREEN-API",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/green-api/whatsapp-chatgpt-js/issues"
+  },
+  "homepage": "https://github.com/green-api/whatsapp-chatgpt-js#readme",
+  "dependencies": {
+    "@green-api/whatsapp-chatbot-js-v2": "^1.4.0",
+    "openai": "^4.85.4",
+    "tsx": "^4.19.2"
+  },
+  "devDependencies": {
+    "cross-env": "^7.0.3",
+    "rimraf": "^6.0.1",
+    "typedoc": "^0.27.9",
+    "typedoc-plugin-markdown": "^4.4.2"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}
