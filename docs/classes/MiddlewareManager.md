@@ -6,7 +6,7 @@
 
 # Class: MiddlewareManager
 
-Defined in: [middleware/middleware.ts:33](https://github.com/green-api/whatsapp-chatgpt-js/blob/144b3e2baae49a260200b70637f606416abe2026/src/middleware/middleware.ts#L33)
+Defined in: [middleware/middleware.ts:33](https://github.com/green-api/whatsapp-chatgpt-js/blob/a8d23283a95688db13d271291301a016d80fdc7a/src/middleware/middleware.ts#L33)
 
 Middleware manager to handle processing pipelines
 
@@ -26,7 +26,7 @@ Middleware manager to handle processing pipelines
 
 > **addMessageMiddleware**(`middleware`): `void`
 
-Defined in: [middleware/middleware.ts:40](https://github.com/green-api/whatsapp-chatgpt-js/blob/144b3e2baae49a260200b70637f606416abe2026/src/middleware/middleware.ts#L40)
+Defined in: [middleware/middleware.ts:40](https://github.com/green-api/whatsapp-chatgpt-js/blob/a8d23283a95688db13d271291301a016d80fdc7a/src/middleware/middleware.ts#L40)
 
 Add middleware to process messages before sending to OpenAI
 
@@ -46,7 +46,7 @@ Add middleware to process messages before sending to OpenAI
 
 > **addResponseMiddleware**(`middleware`): `void`
 
-Defined in: [middleware/middleware.ts:47](https://github.com/green-api/whatsapp-chatgpt-js/blob/144b3e2baae49a260200b70637f606416abe2026/src/middleware/middleware.ts#L47)
+Defined in: [middleware/middleware.ts:47](https://github.com/green-api/whatsapp-chatgpt-js/blob/a8d23283a95688db13d271291301a016d80fdc7a/src/middleware/middleware.ts#L47)
 
 Add middleware to process responses before sending to the user
 
@@ -66,7 +66,7 @@ Add middleware to process responses before sending to the user
 
 > **processMessage**(`message`, `initialMessageContent`, `messages`, `sessionData`): `Promise`\<\{ `messageContent`: `any`; `messages`: `ChatCompletionMessageParam`[]; \}\>
 
-Defined in: [middleware/middleware.ts:54](https://github.com/green-api/whatsapp-chatgpt-js/blob/144b3e2baae49a260200b70637f606416abe2026/src/middleware/middleware.ts#L54)
+Defined in: [middleware/middleware.ts:54](https://github.com/green-api/whatsapp-chatgpt-js/blob/a8d23283a95688db13d271291301a016d80fdc7a/src/middleware/middleware.ts#L54)
 
 Process a message through all message middlewares
 
@@ -98,7 +98,7 @@ Process a message through all message middlewares
 
 > **processResponse**(`initialResponse`, `messages`, `sessionData`): `Promise`\<\{ `messages`: `ChatCompletionMessageParam`[]; `response`: `string`; \}\>
 
-Defined in: [middleware/middleware.ts:78](https://github.com/green-api/whatsapp-chatgpt-js/blob/144b3e2baae49a260200b70637f606416abe2026/src/middleware/middleware.ts#L78)
+Defined in: [middleware/middleware.ts:78](https://github.com/green-api/whatsapp-chatgpt-js/blob/a8d23283a95688db13d271291301a016d80fdc7a/src/middleware/middleware.ts#L78)
 
 Process a response through all response middlewares
 

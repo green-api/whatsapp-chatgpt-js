@@ -21,7 +21,6 @@
 - [GPTBotConfig](interfaces/GPTBotConfig.md)
 - [GPTSessionData](interfaces/GPTSessionData.md)
 - [MessageHandler](interfaces/MessageHandler.md)
-- [MessageProcessingOptions](interfaces/MessageProcessingOptions.md)
 
 ## Type Aliases
 

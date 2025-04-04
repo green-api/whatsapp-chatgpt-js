@@ -6,7 +6,7 @@
 
 # Class: AudioMessageHandler
 
-Defined in: [handlers/message-handlers.ts:77](https://github.com/green-api/whatsapp-chatgpt-js/blob/144b3e2baae49a260200b70637f606416abe2026/src/handlers/message-handlers.ts#L77)
+Defined in: [handlers/message-handlers.ts:77](https://github.com/green-api/whatsapp-chatgpt-js/blob/a8d23283a95688db13d271291301a016d80fdc7a/src/handlers/message-handlers.ts#L77)
 
 Handles audio messages
 
@@ -30,7 +30,7 @@ Handles audio messages
 
 > **canHandle**(`message`): `boolean`
 
-Defined in: [handlers/message-handlers.ts:78](https://github.com/green-api/whatsapp-chatgpt-js/blob/144b3e2baae49a260200b70637f606416abe2026/src/handlers/message-handlers.ts#L78)
+Defined in: [handlers/message-handlers.ts:78](https://github.com/green-api/whatsapp-chatgpt-js/blob/a8d23283a95688db13d271291301a016d80fdc7a/src/handlers/message-handlers.ts#L78)
 
 #### Parameters
 
@@ -52,7 +52,7 @@ Defined in: [handlers/message-handlers.ts:78](https://github.com/green-api/whats
 
 > **processMessage**(`message`, `openai`): `Promise`\<`any`\>
 
-Defined in: [handlers/message-handlers.ts:82](https://github.com/green-api/whatsapp-chatgpt-js/blob/144b3e2baae49a260200b70637f606416abe2026/src/handlers/message-handlers.ts#L82)
+Defined in: [handlers/message-handlers.ts:82](https://github.com/green-api/whatsapp-chatgpt-js/blob/a8d23283a95688db13d271291301a016d80fdc7a/src/handlers/message-handlers.ts#L82)
 
 #### Parameters
 

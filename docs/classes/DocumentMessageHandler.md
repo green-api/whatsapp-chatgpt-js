@@ -6,7 +6,7 @@
 
 # Class: DocumentMessageHandler
 
-Defined in: [handlers/message-handlers.ts:132](https://github.com/green-api/whatsapp-chatgpt-js/blob/144b3e2baae49a260200b70637f606416abe2026/src/handlers/message-handlers.ts#L132)
+Defined in: [handlers/message-handlers.ts:132](https://github.com/green-api/whatsapp-chatgpt-js/blob/a8d23283a95688db13d271291301a016d80fdc7a/src/handlers/message-handlers.ts#L132)
 
 Handles document messages
 
@@ -30,7 +30,7 @@ Handles document messages
 
 > **canHandle**(`message`): `boolean`
 
-Defined in: [handlers/message-handlers.ts:133](https://github.com/green-api/whatsapp-chatgpt-js/blob/144b3e2baae49a260200b70637f606416abe2026/src/handlers/message-handlers.ts#L133)
+Defined in: [handlers/message-handlers.ts:133](https://github.com/green-api/whatsapp-chatgpt-js/blob/a8d23283a95688db13d271291301a016d80fdc7a/src/handlers/message-handlers.ts#L133)
 
 #### Parameters
 
@@ -52,7 +52,7 @@ Defined in: [handlers/message-handlers.ts:133](https://github.com/green-api/what
 
 > **processMessage**(`message`): `Promise`\<`any`\>
 
-Defined in: [handlers/message-handlers.ts:137](https://github.com/green-api/whatsapp-chatgpt-js/blob/144b3e2baae49a260200b70637f606416abe2026/src/handlers/message-handlers.ts#L137)
+Defined in: [handlers/message-handlers.ts:137](https://github.com/green-api/whatsapp-chatgpt-js/blob/a8d23283a95688db13d271291301a016d80fdc7a/src/handlers/message-handlers.ts#L137)
 
 #### Parameters
 

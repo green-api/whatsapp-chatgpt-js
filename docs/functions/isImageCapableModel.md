@@ -8,7 +8,7 @@
 
 > **isImageCapableModel**(`model`): `boolean`
 
-Defined in: [types/index.ts:107](https://github.com/green-api/whatsapp-chatgpt-js/blob/144b3e2baae49a260200b70637f606416abe2026/src/types/index.ts#L107)
+Defined in: [types/index.ts:93](https://github.com/green-api/whatsapp-chatgpt-js/blob/a8d23283a95688db13d271291301a016d80fdc7a/src/types/index.ts#L93)
 
 Check if a model supports image processing
 

@@ -6,7 +6,7 @@
 
 # Class: MessageHandlerRegistry
 
-Defined in: [handlers/message-handlers.ts:238](https://github.com/green-api/whatsapp-chatgpt-js/blob/144b3e2baae49a260200b70637f606416abe2026/src/handlers/message-handlers.ts#L238)
+Defined in: [handlers/message-handlers.ts:238](https://github.com/green-api/whatsapp-chatgpt-js/blob/a8d23283a95688db13d271291301a016d80fdc7a/src/handlers/message-handlers.ts#L238)
 
 Message handler registry that processes WhatsApp messages for OpenAI
 
@@ -16,7 +16,7 @@ Message handler registry that processes WhatsApp messages for OpenAI
 
 > **new MessageHandlerRegistry**(`openai`, `model`): [`MessageHandlerRegistry`](MessageHandlerRegistry.md)
 
-Defined in: [handlers/message-handlers.ts:243](https://github.com/green-api/whatsapp-chatgpt-js/blob/144b3e2baae49a260200b70637f606416abe2026/src/handlers/message-handlers.ts#L243)
+Defined in: [handlers/message-handlers.ts:243](https://github.com/green-api/whatsapp-chatgpt-js/blob/a8d23283a95688db13d271291301a016d80fdc7a/src/handlers/message-handlers.ts#L243)
 
 #### Parameters
 
@@ -38,7 +38,7 @@ Defined in: [handlers/message-handlers.ts:243](https://github.com/green-api/what
 
 > **processMessage**(`message`): `Promise`\<`any`\>
 
-Defined in: [handlers/message-handlers.ts:295](https://github.com/green-api/whatsapp-chatgpt-js/blob/144b3e2baae49a260200b70637f606416abe2026/src/handlers/message-handlers.ts#L295)
+Defined in: [handlers/message-handlers.ts:295](https://github.com/green-api/whatsapp-chatgpt-js/blob/a8d23283a95688db13d271291301a016d80fdc7a/src/handlers/message-handlers.ts#L295)
 
 Process a message using the appropriate handler
 
@@ -58,7 +58,7 @@ Process a message using the appropriate handler
 
 > **registerHandler**(`handler`, `index`?): `void`
 
-Defined in: [handlers/message-handlers.ts:284](https://github.com/green-api/whatsapp-chatgpt-js/blob/144b3e2baae49a260200b70637f606416abe2026/src/handlers/message-handlers.ts#L284)
+Defined in: [handlers/message-handlers.ts:284](https://github.com/green-api/whatsapp-chatgpt-js/blob/a8d23283a95688db13d271291301a016d80fdc7a/src/handlers/message-handlers.ts#L284)
 
 Register a custom message handler
 
@@ -86,7 +86,7 @@ Optional position to insert the handler (default: before fallback)
 
 > **replaceHandler**(`handlerType`, `newHandler`): `boolean`
 
-Defined in: [handlers/message-handlers.ts:270](https://github.com/green-api/whatsapp-chatgpt-js/blob/144b3e2baae49a260200b70637f606416abe2026/src/handlers/message-handlers.ts#L270)
+Defined in: [handlers/message-handlers.ts:270](https://github.com/green-api/whatsapp-chatgpt-js/blob/a8d23283a95688db13d271291301a016d80fdc7a/src/handlers/message-handlers.ts#L270)
 
 Replace a handler of a specific type with a new handler
 

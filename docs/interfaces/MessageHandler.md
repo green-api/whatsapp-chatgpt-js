@@ -6,7 +6,7 @@
 
 # Interface: MessageHandler
 
-Defined in: [handlers/message-handlers.ts:17](https://github.com/green-api/whatsapp-chatgpt-js/blob/144b3e2baae49a260200b70637f606416abe2026/src/handlers/message-handlers.ts#L17)
+Defined in: [handlers/message-handlers.ts:17](https://github.com/green-api/whatsapp-chatgpt-js/blob/a8d23283a95688db13d271291301a016d80fdc7a/src/handlers/message-handlers.ts#L17)
 
 Base handler interface for processing different message types
 
@@ -16,7 +16,7 @@ Base handler interface for processing different message types
 
 > **canHandle**(`message`): `boolean`
 
-Defined in: [handlers/message-handlers.ts:18](https://github.com/green-api/whatsapp-chatgpt-js/blob/144b3e2baae49a260200b70637f606416abe2026/src/handlers/message-handlers.ts#L18)
+Defined in: [handlers/message-handlers.ts:18](https://github.com/green-api/whatsapp-chatgpt-js/blob/a8d23283a95688db13d271291301a016d80fdc7a/src/handlers/message-handlers.ts#L18)
 
 #### Parameters
 
@@ -34,7 +34,7 @@ Defined in: [handlers/message-handlers.ts:18](https://github.com/green-api/whats
 
 > **processMessage**(`message`, `openai`, `model`?): `Promise`\<`any`\>
 
-Defined in: [handlers/message-handlers.ts:20](https://github.com/green-api/whatsapp-chatgpt-js/blob/144b3e2baae49a260200b70637f606416abe2026/src/handlers/message-handlers.ts#L20)
+Defined in: [handlers/message-handlers.ts:20](https://github.com/green-api/whatsapp-chatgpt-js/blob/a8d23283a95688db13d271291301a016d80fdc7a/src/handlers/message-handlers.ts#L20)
 
 #### Parameters
 

@@ -6,7 +6,7 @@
 
 # Class: FallbackMessageHandler
 
-Defined in: [handlers/message-handlers.ts:225](https://github.com/green-api/whatsapp-chatgpt-js/blob/144b3e2baae49a260200b70637f606416abe2026/src/handlers/message-handlers.ts#L225)
+Defined in: [handlers/message-handlers.ts:225](https://github.com/green-api/whatsapp-chatgpt-js/blob/a8d23283a95688db13d271291301a016d80fdc7a/src/handlers/message-handlers.ts#L225)
 
 Fallback handler for unsupported message types
 
@@ -30,7 +30,7 @@ Fallback handler for unsupported message types
 
 > **canHandle**(`_`): `boolean`
 
-Defined in: [handlers/message-handlers.ts:226](https://github.com/green-api/whatsapp-chatgpt-js/blob/144b3e2baae49a260200b70637f606416abe2026/src/handlers/message-handlers.ts#L226)
+Defined in: [handlers/message-handlers.ts:226](https://github.com/green-api/whatsapp-chatgpt-js/blob/a8d23283a95688db13d271291301a016d80fdc7a/src/handlers/message-handlers.ts#L226)
 
 #### Parameters
 
@@ -52,7 +52,7 @@ Defined in: [handlers/message-handlers.ts:226](https://github.com/green-api/what
 
 > **processMessage**(`message`): `Promise`\<`any`\>
 
-Defined in: [handlers/message-handlers.ts:230](https://github.com/green-api/whatsapp-chatgpt-js/blob/144b3e2baae49a260200b70637f606416abe2026/src/handlers/message-handlers.ts#L230)
+Defined in: [handlers/message-handlers.ts:230](https://github.com/green-api/whatsapp-chatgpt-js/blob/a8d23283a95688db13d271291301a016d80fdc7a/src/handlers/message-handlers.ts#L230)
 
 #### Parameters
 

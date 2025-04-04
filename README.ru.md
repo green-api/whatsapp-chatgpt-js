@@ -29,16 +29,115 @@ import { WhatsappGptBot } from '@green-api/whatsapp-chatgpt';
 
 // Инициализация бота
 const bot = new WhatsappGptBot({
-	idInstance: "your-instance-id",
-	apiTokenInstance: "your-token",
-	openaiApiKey: "your-openai-api-key",
-	model: "gpt-4o",
-	systemMessage: "Вы - полезный ассистент."
+    idInstance: "your-instance-id",
+    apiTokenInstance: "your-token",
+    openaiApiKey: "your-openai-api-key",
+    model: "gpt-4o",
+    systemMessage: "Вы - полезный ассистент."
 });
 
 // Запуск бота
 bot.start();
 ```
+
+# Варианты использования
+
+Данная библиотека поддерживает два различных варианта использования в зависимости от ваших потребностей:
+
+## 1. Самостоятельный бот
+
+Вы можете запустить бота как самостоятельный сервис, который автоматически прослушивает и обрабатывает сообщения
+WhatsApp:
+
+```typescript
+const bot = new WhatsappGptBot({
+    idInstance: "your-instance-id",
+    apiTokenInstance: "your-token",
+    openaiApiKey: "your-openai-api-key",
+    model: "gpt-4o",
+    systemMessage: "Вы - полезный ассистент."
+});
+
+// Начать прослушивание вебхуков и обработку сообщений
+bot.start();
+```
+
+## 2. Обработчик сообщений
+
+Альтернативно, вы можете использовать бота как утилиту для обработки сообщений в вашем собственном боте или приложении:
+
+```typescript
+const gptBot = new WhatsappGptBot({
+    idInstance: "your-instance-id",
+    apiTokenInstance: "your-token",
+    openaiApiKey: "your-openai-api-key",
+    model: "gpt-4o",
+    systemMessage: "Вы - полезный ассистент."
+});
+
+// Не нужно вызывать start() - просто используйте processMessage когда нужно
+const { response, updatedData } = await gptBot.processMessage(message, sessionData);
+
+// Обработайте ответ своим способом
+await yourBot.sendText(message.chatId, response);
+
+// Сохраните обновленные данные сессии в своей системе состояний
+yourSessionData.gptSession = updatedData;
+```
+
+### Пример интеграции
+
+Вот как интегрировать GPT-бота в ваш собственный бот, основанный на состояниях:
+
+```typescript
+interface CustomSessionData {
+    lang?: string;
+    gptSession?: GPTSessionData;  // Хранение данных сессии GPT
+}
+
+const gptState: State<CustomSessionData> = {
+    name: "gpt_state",
+    async onEnter(message, data) {
+        // Инициализация сессии GPT
+        data.gptSession = {
+            messages: [{ role: "system", content: gptBot.systemMessage }],
+            lastActivity: Date.now()
+        };
+        await bot.sendText(message.chatId, "Чат с GPT начат!");
+    },
+    async onMessage(message, data) {
+        // Обработка сообщений с помощью GPT-бота
+        const { response, updatedData } = await gptBot.processMessage(
+            message, 
+            data.gptSession
+        );
+        
+        await bot.sendText(message.chatId, response);
+        data.gptSession = updatedData;
+        
+        return undefined;  // Остаться в текущем состоянии
+    }
+};
+```
+
+Эта гибкость позволяет вам либо запускать бота независимо, либо интегрировать его возможности GPT в вашу систему,
+сохраняя полный контроль над потоком разговора и управлением состояниями.
+
+Ключевые моменты об этих вариантах:
+
+1. **Самостоятельный бот**
+    - Использует внутреннее управление состояниями
+    - Автоматически обрабатывает вебхуки
+    - Лучше подходит для простых, однофункциональных GPT-чатботов
+    - Требует вызова `bot.start()`
+
+2. **Обработчик сообщений**
+    - Не требует внутреннего управления состояниями
+    - Не обрабатывает вебхуки
+    - Идеально подходит для интеграции в существующих ботов
+    - Использует только возможности обработки GPT
+    - Более гибкий и контролируемый
+    - Никогда не вызывайте `start()` - просто используйте `processMessage()`
 
 ## Основные компоненты
 
@@ -48,26 +147,26 @@ bot.start();
 
 ```typescript
 interface GPTBotConfig extends BotConfig {
-	/** API-ключ OpenAI */
-	openaiApiKey: string;
+    /** API-ключ OpenAI */
+    openaiApiKey: string;
 
-	/** Модель для генерации ответов (по умолчанию: gpt-4o) */
-	model?: OpenAIModel;
+    /** Модель для генерации ответов (по умолчанию: gpt-4o) */
+    model?: OpenAIModel;
 
-	/** Максимальное количество сообщений для хранения в истории разговора (по умолчанию: 10) */
-	maxHistoryLength?: number;
+    /** Максимальное количество сообщений для хранения в истории разговора (по умолчанию: 10) */
+    maxHistoryLength?: number;
 
-	/** Системное сообщение для определения поведения ассистента */
-	systemMessage?: string;
+    /** Системное сообщение для определения поведения ассистента */
+    systemMessage?: string;
 
-	/** Температура для генерации ответов (по умолчанию: 0.5) */
-	temperature?: number;
+    /** Температура для генерации ответов (по умолчанию: 0.5) */
+    temperature?: number;
 
-	/** Ответ по умолчанию при возникновении ошибки */
-	errorMessage?: string;
+    /** Ответ по умолчанию при возникновении ошибки */
+    errorMessage?: string;
 
-	// Все параметры конфигурации из базовой библиотеки WhatsAppBot также доступны
-	// См. документацию @green-api/whatsapp-chatbot-js-v2 для дополнительных опций
+    // Все параметры конфигурации из базовой библиотеки WhatsAppBot также доступны
+    // См. документацию @green-api/whatsapp-chatbot-js-v2 для дополнительных опций
 }
 ```
 
@@ -77,22 +176,22 @@ interface GPTBotConfig extends BotConfig {
 
 ```typescript
 const bot = new WhatsappGptBot({
-	// Обязательные параметры
-	idInstance: "your-instance-id",
-	apiTokenInstance: "your-token",
-	openaiApiKey: "your-openai-api-key",
+    // Обязательные параметры
+    idInstance: "your-instance-id",
+    apiTokenInstance: "your-token",
+    openaiApiKey: "your-openai-api-key",
 
-	// Опциональные GPT-специфические параметры
-	model: "gpt-4o",
-	maxHistoryLength: 15,
-	systemMessage: "Вы - полезный ассистент, специализирующийся на поддержке клиентов.",
-	temperature: 0.7,
-	errorMessage: "Извините, я не смог обработать ваш запрос. Пожалуйста, попробуйте снова.",
+    // Опциональные GPT-специфические параметры
+    model: "gpt-4o",
+    maxHistoryLength: 15,
+    systemMessage: "Вы - полезный ассистент, специализирующийся на поддержке клиентов.",
+    temperature: 0.7,
+    errorMessage: "Извините, я не смог обработать ваш запрос. Пожалуйста, попробуйте снова.",
 
-	// Опциональные параметры из базового бота
-	defaultState: "greeting",
-	sessionTimeout: 300,
-	// См. документацию базовой библиотеки для дополнительных опций
+    // Опциональные параметры из базового бота
+    defaultState: "greeting",
+    sessionTimeout: 300,
+    // См. документацию базовой библиотеки для дополнительных опций
 });
 ```
 
@@ -121,14 +220,14 @@ const registry = bot.messageHandlers;
 
 // Создание пользовательского обработчика сообщений
 class CustomMessageHandler implements MessageHandler {
-	canHandle(message: Message): boolean {
-		return message.type === "custom-type";
-	}
+    canHandle(message: Message): boolean {
+        return message.type === "custom-type";
+    }
 
-	async processMessage(message: Message): Promise<any> {
-		// Обработка сообщения
-		return "Обработанный контент";
-	}
+    async processMessage(message: Message): Promise<any> {
+        // Обработка сообщения
+        return "Обработанный контент";
+    }
 }
 
 // Регистрация пользовательского обработчика
@@ -148,24 +247,24 @@ bot.replaceHandler(TextMessageHandler, new CustomTextHandler());
 ```typescript
 // Обработка сообщений перед отправкой в GPT
 bot.addMessageMiddleware(async (message, messageContent, messages, sessionData) => {
-	// Добавление пользовательского контекста в разговор
-	if (message.type === "text" && message.chatId.endsWith("@c.us")) {
-		// Добавление информации о пользователе из базы данных
-		const userInfo = await getUserInfo(message.chatId);
+    // Добавление пользовательского контекста в разговор
+    if (message.type === "text" && message.chatId.endsWith("@c.us")) {
+        // Добавление информации о пользователе из базы данных
+        const userInfo = await getUserInfo(message.chatId);
 
-		// Изменение текущего содержимого сообщения
-		const enhancedContent = `[Пользователь: ${userInfo.name}] ${messageContent}`;
+        // Изменение текущего содержимого сообщения
+        const enhancedContent = `[Пользователь: ${userInfo.name}] ${messageContent}`;
 
-		return {
-			messageContent: enhancedContent,
-			messages
-		};
-	}
+        return {
+            messageContent: enhancedContent,
+            messages
+        };
+    }
 
-	return {
-		messageContent,
-		messages
-	};
+    return {
+        messageContent,
+        messages
+    };
 });
 ```
 
@@ -174,16 +273,16 @@ bot.addMessageMiddleware(async (message, messageContent, messages, sessionData) 
 ```typescript
 // Обработка ответов GPT перед отправкой пользователю
 bot.addResponseMiddleware(async (response, messages, sessionData) => {
-	// Форматирование или изменение ответа
-	const formattedResponse = response
-		.replace(/\bGPT\b/g, "Ассистент")
-		.trim();
+    // Форматирование или изменение ответа
+    const formattedResponse = response
+            .replace(/\bGPT\b/g, "Ассистент")
+            .trim();
 
-	// Вы также можете изменить сообщения, которые будут сохранены в истории
-	return {
-		response: formattedResponse,
-		messages
-	};
+    // Вы также можете изменить сообщения, которые будут сохранены в истории
+    return {
+        response: formattedResponse,
+        messages
+    };
 });
 ```
 
@@ -193,23 +292,23 @@ GPT-бот расширяет базовые данные сессии инфо�
 
 ```typescript
 interface GPTSessionData {
-	/** История разговора */
-	messages: ChatCompletionMessageParam[];
+    /** История разговора */
+    messages: ChatCompletionMessageParam[];
 
-	/** Временная метка последней активности */
-	lastActivity: number;
+    /** Временная метка последней активности */
+    lastActivity: number;
 
-	/** Пользовательские данные состояния */
-	userData?: Record<string, any>;
+    /** Пользовательские данные состояния */
+    userData?: Record<string, any>;
 
-	/** Контекст для текущего разговора */
-	context?: {
-		/** Теги или метаданные для разговора */
-		tags?: string[];
+    /** Контекст для текущего разговора */
+    context?: {
+        /** Теги или метаданные для разговора */
+        tags?: string[];
 
-		/** Пользовательские переменные контекста */
-		variables?: Record<string, any>;
-	};
+        /** Пользовательские переменные контекста */
+        variables?: Record<string, any>;
+    };
 }
 ```
 
@@ -217,14 +316,14 @@ interface GPTSessionData {
 
 ```typescript
 bot.addMessageMiddleware(async (message, content, messages, sessionData) => {
-	// Установка переменных контекста
-	if (!sessionData.context) {
-		sessionData.context = {variables: {}};
-	}
+    // Установка переменных контекста
+    if (!sessionData.context) {
+        sessionData.context = {variables: {}};
+    }
 
-	sessionData.context.variables.lastInteraction = new Date().toISOString();
+    sessionData.context.variables.lastInteraction = new Date().toISOString();
 
-	return {messageContent: content, messages};
+    return {messageContent: content, messages};
 });
 ```
 
@@ -255,9 +354,9 @@ import { Utils } from '@green-api/whatsapp-chatgpt';
 
 // Обрезка истории разговора
 const trimmedMessages = Utils.trimConversationHistory(
-	messages,
-	10,  // макс. кол-во сообщений
-	true  // сохранить системное сообщение
+        messages,
+        10,  // макс. кол-во сообщений
+        true  // сохранить системное сообщение
 );
 
 // Оценка использования токенов
@@ -316,24 +415,24 @@ const estimatedTokens = Utils.estimateTokens(messages);
 ```typescript
 // Добавление пользовательского состояния
 bot.addState({
-	name: "collect_info",
-	async onEnter(message) {
-		await bot.sendText(message.chatId, "Пожалуйста, укажите ваше имя.");
-	},
-	async onMessage(message, data = {}) {
-		// Сохранение имени и обработка с помощью GPT
-		const openai = bot.getOpenAI();
-		const completion = await openai.chat.completions.create({
-			model: "gpt-3.5-turbo",
-			messages: [
-				{role: "system", content: "Сгенерируйте персонализированное приветствие."},
-				{role: "user", content: `Меня зовут ${message.text}`}
-			]
-		});
+    name: "collect_info",
+    async onEnter(message) {
+        await bot.sendText(message.chatId, "Пожалуйста, укажите ваше имя.");
+    },
+    async onMessage(message, data = {}) {
+        // Сохранение имени и обработка с помощью GPT
+        const openai = bot.getOpenAI();
+        const completion = await openai.chat.completions.create({
+            model: "gpt-3.5-turbo",
+            messages: [
+                {role: "system", content: "Сгенерируйте персонализированное приветствие."},
+                {role: "user", content: `Меня зовут ${message.text}`}
+            ]
+        });
 
-		await bot.sendText(message.chatId, completion.choices[0]?.message.content || "Привет!");
-		return "main_chat"; // Переход в основное состояние чата
-	}
+        await bot.sendText(message.chatId, completion.choices[0]?.message.content || "Привет!");
+        return "main_chat"; // Переход в основное состояние чата
+    }
 });
 ```
 
@@ -345,7 +444,7 @@ const openai = bot.getOpenAI();
 
 // Проверка поддержки изображений текущей моделью
 if (bot.supportsImages()) {
-	// Обработка рабочего процесса на основе изображений
+    // Обработка рабочего процесса на основе изображений
 }
 ```
 
@@ -356,12 +455,12 @@ if (bot.supportsImages()) {
 
 ```typescript
 import {
-	GPTSessionData,
-	ImageMessageHandler,
-	ProcessMessageMiddleware,
-	ProcessResponseMiddleware,
-	WhatsappGptBot,
-	OpenAIModel,
+    GPTSessionData,
+    ImageMessageHandler,
+    ProcessMessageMiddleware,
+    ProcessResponseMiddleware,
+    WhatsappGptBot,
+    OpenAIModel,
 } from "@green-api/whatsapp-chatgpt";
 import * as dotenv from "dotenv";
 import { Message } from "@green-api/whatsapp-chatbot-js-v2";
@@ -372,51 +471,51 @@ dotenv.config();
 
 // Пользовательский обработчик изображений с расширенными описаниями
 class EnhancedImageHandler extends ImageMessageHandler {
-	async processMessage(message: Message, openai: OpenAI, model: OpenAIModel): Promise<any> {
-		const result = await super.processMessage(message, openai, model);
+    async processMessage(message: Message, openai: OpenAI, model: OpenAIModel): Promise<any> {
+        const result = await super.processMessage(message, openai, model);
 
-		if (typeof result === "string") {
-			return result.replace(
-				"[The user sent an image",
-				"[Пользователь отправил изображение. Сообщите ему, что вы не та модель, которую он должен использовать"
-			);
-		}
+        if (typeof result === "string") {
+            return result.replace(
+                    "[The user sent an image",
+                    "[Пользователь отправил изображение. Сообщите ему, что вы не та модель, которую он должен использовать"
+            );
+        }
 
-		return result;
-	}
+        return result;
+    }
 }
 
 // Примеры промежуточного ПО
 
 // Промежуточное ПО для логирования
 const loggingMessageMiddleware: ProcessMessageMiddleware = async (
-	message, messageContent, messages, _
+        message, messageContent, messages, _
 ) => {
-	console.log(`[${new Date().toISOString()}] Пользователь (${message.chatId}): `,
-		typeof messageContent === "string"
-			? messageContent
-			: JSON.stringify(messageContent));
+    console.log(`[${new Date().toISOString()}] Пользователь (${message.chatId}): `,
+            typeof messageContent === "string"
+                    ? messageContent
+                    : JSON.stringify(messageContent));
 
-	return {messageContent, messages};
+    return {messageContent, messages};
 };
 
 // Инициализация бота
 const bot = new WhatsappGptBot({
-	idInstance: process.env.INSTANCE_ID || "",
-	apiTokenInstance: process.env.INSTANCE_TOKEN || "",
-	openaiApiKey: process.env.OPENAI_API_KEY || "",
-	model: "gpt-4o",
-	systemMessage: "Вы - полезный WhatsApp-ассистент, созданный GREEN-API",
-	maxHistoryLength: 15,
-	temperature: 0.5,
-	handlersFirst: true,
-	clearWebhookQueueOnStart: true,
+    idInstance: process.env.INSTANCE_ID || "",
+    apiTokenInstance: process.env.INSTANCE_TOKEN || "",
+    openaiApiKey: process.env.OPENAI_API_KEY || "",
+    model: "gpt-4o",
+    systemMessage: "Вы - полезный WhatsApp-ассистент, созданный GREEN-API",
+    maxHistoryLength: 15,
+    temperature: 0.5,
+    handlersFirst: true,
+    clearWebhookQueueOnStart: true,
 });
 
 // Обработчики команд
 bot.onText("/help", async (message, _) => {
-	const helpText = `*WhatsAppGPT Демо-бот*\n\nДоступные команды:\n- /help - Показать это сообщение помощи\n- /clear - Очистить историю разговора`;
-	await bot.sendText(message.chatId, helpText);
+    const helpText = `*WhatsAppGPT Демо-бот*\n\nДоступные команды:\n- /help - Показать это сообщение помощи\n- /clear - Очистить историю разговора`;
+    await bot.sendText(message.chatId, helpText);
 });
 
 // Регистрация промежуточного ПО
@@ -446,52 +545,52 @@ import { WhatsappGptBot } from '@green-api/whatsapp-chatgpt';
 import { detectLanguage } from './language-detector';
 
 const bot = new WhatsappGptBot({
-	idInstance: "your-instance-id",
-	apiTokenInstance: "your-token",
-	openaiApiKey: "your-openai-api-key",
-	model: "gpt-4o"
+    idInstance: "your-instance-id",
+    apiTokenInstance: "your-token",
+    openaiApiKey: "your-openai-api-key",
+    model: "gpt-4o"
 });
 
 // Добавление промежуточного ПО для определения языка
 bot.addMessageMiddleware(async (message, content, messages, sessionData) => {
-	// Обрабатывать только текстовые сообщения
-	if (message.type !== 'text' || !message.text) {
-		return {messageContent: content, messages};
-	}
+    // Обрабатывать только текстовые сообщения
+    if (message.type !== 'text' || !message.text) {
+        return {messageContent: content, messages};
+    }
 
-	// Определение языка
-	const language = await detectLanguage(message.text);
+    // Определение языка
+    const language = await detectLanguage(message.text);
 
-	// Сохранение языка в сессии
-	if (!sessionData.context) {
-		sessionData.context = {variables: {}};
-	}
-	sessionData.context.variables.language = language;
+    // Сохранение языка в сессии
+    if (!sessionData.context) {
+        sessionData.context = {variables: {}};
+    }
+    sessionData.context.variables.language = language;
 
-	// Обновление системного сообщения с инструкцией о языке
-	const languageInstruction = `Пользователь пишет на ${language}. Отвечайте на том же языке.`;
+    // Обновление системного сообщения с инструкцией о языке
+    const languageInstruction = `Пользователь пишет на ${language}. Отвечайте на том же языке.`;
 
-	// Поиск системного сообщения
-	const systemIndex = messages.findIndex(m => m.role === 'system');
+    // Поиск системного сообщения
+    const systemIndex = messages.findIndex(m => m.role === 'system');
 
-	if (systemIndex >= 0) {
-		// Обновление существующего системного сообщения
-		const updatedMessages = [...messages];
-		const currentContent = updatedMessages[systemIndex].content;
-		if (typeof currentContent === 'string' && !currentContent.includes('Пользователь пишет на')) {
-			updatedMessages[systemIndex].content = `${currentContent} ${languageInstruction}`;
-		}
-		return {messageContent: content, messages: updatedMessages};
-	} else {
-		// Добавление нового системного сообщения
-		return {
-			messageContent: content,
-			messages: [
-				{role: 'system', content: languageInstruction},
-				...messages
-			]
-		};
-	}
+    if (systemIndex >= 0) {
+        // Обновление существующего системного сообщения
+        const updatedMessages = [...messages];
+        const currentContent = updatedMessages[systemIndex].content;
+        if (typeof currentContent === 'string' && !currentContent.includes('Пользователь пишет на')) {
+            updatedMessages[systemIndex].content = `${currentContent} ${languageInstruction}`;
+        }
+        return {messageContent: content, messages: updatedMessages};
+    } else {
+        // Добавление нового системного сообщения
+        return {
+            messageContent: content,
+            messages: [
+                {role: 'system', content: languageInstruction},
+                ...messages
+            ]
+        };
+    }
 });
 
 // Запуск бота

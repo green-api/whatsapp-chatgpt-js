@@ -2,7 +2,7 @@
 
 ***
 
-# whatsapp-chatgpt-a# WhatsApp GPT Bot Library
+# WhatsApp GPT Bot Library
 
 A modern, state-based WhatsApp bot library with OpenAI GPT integration, built on top of GREEN-API by
 @green-api/whatsapp-chatgpt.
@@ -34,16 +34,114 @@ import { WhatsappGptBot } from '@green-api/whatsapp-chatgpt';
 
 // Initialize the bot
 const bot = new WhatsappGptBot({
-	idInstance: "your-instance-id",
-	apiTokenInstance: "your-token",
-	openaiApiKey: "your-openai-api-key",
-	model: "gpt-4o",
-	systemMessage: "You are a helpful assistant."
+    idInstance: "your-instance-id",
+    apiTokenInstance: "your-token",
+    openaiApiKey: "your-openai-api-key",
+    model: "gpt-4o",
+    systemMessage: "You are a helpful assistant."
 });
 
 // Start the bot
 bot.start();
 ```
+
+# Usage Patterns
+
+This library supports two distinct usage patterns depending on your needs:
+
+## 1. Standalone Bot
+
+You can run the bot as a standalone service that listens for and processes WhatsApp messages automatically:
+
+```typescript
+const bot = new WhatsappGptBot({
+    idInstance: "your-instance-id",
+    apiTokenInstance: "your-token",
+    openaiApiKey: "your-openai-api-key",
+    model: "gpt-4o",
+    systemMessage: "You are a helpful assistant."
+});
+
+// Start listening for webhooks and processing messages
+bot.start();
+```
+
+## 2. Message Processor
+
+Alternatively, you can use the bot as a message processing utility within your own bot or application:
+
+```typescript
+const gptBot = new WhatsappGptBot({
+    idInstance: "your-instance-id",
+    apiTokenInstance: "your-token",
+    openaiApiKey: "your-openai-api-key",
+    model: "gpt-4o",
+    systemMessage: "You are a helpful assistant."
+});
+
+// No need to call start() - just use processMessage when needed
+const {response, updatedData} = await gptBot.processMessage(message, sessionData);
+
+// Handle the response in your own way
+await yourBot.sendText(message.chatId, response);
+
+// Store the updated session data in your own state system
+yourSessionData.gptSession = updatedData;
+```
+
+### Integration Example
+
+Here's how to integrate the GPT bot into your own state-based bot:
+
+```typescript
+interface CustomSessionData {
+    lang?: string;
+    gptSession?: GPTSessionData;  // Store GPT session data
+}
+
+const gptState: State<CustomSessionData> = {
+    name: "gpt_state",
+    async onEnter(message, data) {
+        // Initialize GPT session
+        data.gptSession = {
+            messages: [{role: "system", content: gptBot.systemMessage}],
+            lastActivity: Date.now()
+        };
+        await bot.sendText(message.chatId, "Chat with GPT started!");
+    },
+    async onMessage(message, data) {
+        // Process messages using GPT bot
+        const {response, updatedData} = await gptBot.processMessage(
+                message,
+                data.gptSession
+        );
+
+        await bot.sendText(message.chatId, response);
+        data.gptSession = updatedData;
+
+        return undefined;  // Stay in current state
+    }
+};
+```
+
+This flexibility allows you to either run the bot independently or integrate its GPT capabilities into a larger system
+while maintaining full control over the conversation flow and state management.
+
+Key points about these patterns:
+
+1. **Standalone Bot**
+    - Uses internal state management
+    - Handles webhooks automatically
+    - Better for simple, single-purpose GPT chatbots
+    - Requires calling `bot.start()`
+
+2. **Message Processor**
+    - No internal state management needed
+    - No webhook handling
+    - Perfect for integration into existing bots
+    - Uses only the GPT processing capabilities
+    - More flexible and controllable
+    - Never call `start()` - just use `processMessage()`
 
 ## Core Components
 
@@ -53,26 +151,26 @@ Complete configuration options for the WhatsappGptBot:
 
 ```typescript
 interface GPTBotConfig extends BotConfig {
-	/** OpenAI API key */
-	openaiApiKey: string;
+    /** OpenAI API key */
+    openaiApiKey: string;
 
-	/** Model to use for chat completion (default: gpt-4o) */
-	model?: OpenAIModel;
+    /** Model to use for chat completion (default: gpt-4o) */
+    model?: OpenAIModel;
 
-	/** Maximum number of messages to keep in conversation history (default: 10) */
-	maxHistoryLength?: number;
+    /** Maximum number of messages to keep in conversation history (default: 10) */
+    maxHistoryLength?: number;
 
-	/** System message to set assistant behavior */
-	systemMessage?: string;
+    /** System message to set assistant behavior */
+    systemMessage?: string;
 
-	/** Temperature for response generation (default: 0.5) */
-	temperature?: number;
+    /** Temperature for response generation (default: 0.5) */
+    temperature?: number;
 
-	/** Default reply when an error occurs */
-	errorMessage?: string;
+    /** Default reply when an error occurs */
+    errorMessage?: string;
 
-	// All configuration options from the base WhatsAppBot are also available
-	// See @green-api/whatsapp-chatbot-js-v2 for additional options
+    // All configuration options from the base WhatsAppBot are also available
+    // See @green-api/whatsapp-chatbot-js-v2 for additional options
 }
 ```
 
@@ -82,22 +180,22 @@ Main class for creating and managing your OpenAI-powered WhatsApp bot:
 
 ```typescript
 const bot = new WhatsappGptBot({
-	// Required parameters
-	idInstance: "your-instance-id",
-	apiTokenInstance: "your-token",
-	openaiApiKey: "your-openai-api-key",
+    // Required parameters
+    idInstance: "your-instance-id",
+    apiTokenInstance: "your-token",
+    openaiApiKey: "your-openai-api-key",
 
-	// Optional GPT-specific parameters
-	model: "gpt-4o",
-	maxHistoryLength: 15,
-	systemMessage: "You are a helpful assistant specializing in customer support.",
-	temperature: 0.7,
-	errorMessage: "Sorry, I couldn't process your request. Please try again.",
+    // Optional GPT-specific parameters
+    model: "gpt-4o",
+    maxHistoryLength: 15,
+    systemMessage: "You are a helpful assistant specializing in customer support.",
+    temperature: 0.7,
+    errorMessage: "Sorry, I couldn't process your request. Please try again.",
 
-	// Optional parameters from base bot
-	defaultState: "greeting",
-	sessionTimeout: 300,
-	// See base library documentation for more options
+    // Optional parameters from base bot
+    defaultState: "greeting",
+    sessionTimeout: 300,
+    // See base library documentation for more options
 });
 ```
 
@@ -127,14 +225,14 @@ const registry = bot.messageHandlers;
 
 // Create a custom message handler
 class CustomMessageHandler implements MessageHandler {
-	canHandle(message: Message): boolean {
-		return message.type === "custom-type";
-	}
+    canHandle(message: Message): boolean {
+        return message.type === "custom-type";
+    }
 
-	async processMessage(message: Message): Promise<any> {
-		// Process the message
-		return "Processed content";
-	}
+    async processMessage(message: Message): Promise<any> {
+        // Process the message
+        return "Processed content";
+    }
 }
 
 // Register the custom handler
@@ -154,24 +252,24 @@ sending back to the user.
 ```typescript
 // Process messages before sending to GPT
 bot.addMessageMiddleware(async (message, messageContent, messages, sessionData) => {
-	// Add custom context to the conversation
-	if (message.type === "text" && message.chatId.endsWith("@c.us")) {
-		// Add user information from a database
-		const userInfo = await getUserInfo(message.chatId);
+    // Add custom context to the conversation
+    if (message.type === "text" && message.chatId.endsWith("@c.us")) {
+        // Add user information from a database
+        const userInfo = await getUserInfo(message.chatId);
 
-		// Modify the current message content
-		const enhancedContent = `[User: ${userInfo.name}] ${messageContent}`;
+        // Modify the current message content
+        const enhancedContent = `[User: ${userInfo.name}] ${messageContent}`;
 
-		return {
-			messageContent: enhancedContent,
-			messages
-		};
-	}
+        return {
+            messageContent: enhancedContent,
+            messages
+        };
+    }
 
-	return {
-		messageContent,
-		messages
-	};
+    return {
+        messageContent,
+        messages
+    };
 });
 ```
 
@@ -180,16 +278,16 @@ bot.addMessageMiddleware(async (message, messageContent, messages, sessionData) 
 ```typescript
 // Process GPT responses before sending to user
 bot.addResponseMiddleware(async (response, messages, sessionData) => {
-	// Format or modify the response
-	const formattedResponse = response
-		.replace(/\bGPT\b/g, "Assistant")
-		.trim();
+    // Format or modify the response
+    const formattedResponse = response
+            .replace(/\bGPT\b/g, "Assistant")
+            .trim();
 
-	// You can also modify the messages that will be saved in history
-	return {
-		response: formattedResponse,
-		messages
-	};
+    // You can also modify the messages that will be saved in history
+    return {
+        response: formattedResponse,
+        messages
+    };
 });
 ```
 
@@ -199,23 +297,23 @@ The GPT bot extends the base session data with conversation-specific information
 
 ```typescript
 interface GPTSessionData {
-	/** Conversation history */
-	messages: ChatCompletionMessageParam[];
+    /** Conversation history */
+    messages: ChatCompletionMessageParam[];
 
-	/** Timestamp of last activity */
-	lastActivity: number;
+    /** Timestamp of last activity */
+    lastActivity: number;
 
-	/** Custom user state data */
-	userData?: Record<string, any>;
+    /** Custom user state data */
+    userData?: Record<string, any>;
 
-	/** Context for the current conversation */
-	context?: {
-		/** Tags or metadata for the conversation */
-		tags?: string[];
+    /** Context for the current conversation */
+    context?: {
+        /** Tags or metadata for the conversation */
+        tags?: string[];
 
-		/** Custom context variables */
-		variables?: Record<string, any>;
-	};
+        /** Custom context variables */
+        variables?: Record<string, any>;
+    };
 }
 ```
 
@@ -223,14 +321,14 @@ You can access and modify this data in your middleware:
 
 ```typescript
 bot.addMessageMiddleware(async (message, content, messages, sessionData) => {
-	// Set context variables
-	if (!sessionData.context) {
-		sessionData.context = {variables: {}};
-	}
+    // Set context variables
+    if (!sessionData.context) {
+        sessionData.context = {variables: {}};
+    }
 
-	sessionData.context.variables.lastInteraction = new Date().toISOString();
+    sessionData.context.variables.lastInteraction = new Date().toISOString();
 
-	return {messageContent: content, messages};
+    return {messageContent: content, messages};
 });
 ```
 
@@ -261,9 +359,9 @@ import { Utils } from 'whatsapp-gpt-bot';
 
 // Trim conversation history
 const trimmedMessages = Utils.trimConversationHistory(
-	messages,
-	10,  // max messages
-	true  // preserve system message
+        messages,
+        10,  // max messages
+        true  // preserve system message
 );
 
 // Estimate token usage
@@ -321,24 +419,24 @@ Since the library is built on @green-api/whatsapp-chatbot-js-v2, you can use all
 ```typescript
 // Add custom state
 bot.addState({
-	name: "collect_info",
-	async onEnter(message) {
-		await bot.sendText(message.chatId, "Please provide your name.");
-	},
-	async onMessage(message, data = {}) {
-		// Store the name and process with GPT
-		const openai = bot.getOpenAI();
-		const completion = await openai.chat.completions.create({
-			model: "gpt-3.5-turbo",
-			messages: [
-				{role: "system", content: "Generate a personalized greeting."},
-				{role: "user", content: `My name is ${message.text}`}
-			]
-		});
+    name: "collect_info",
+    async onEnter(message) {
+        await bot.sendText(message.chatId, "Please provide your name.");
+    },
+    async onMessage(message, data = {}) {
+        // Store the name and process with GPT
+        const openai = bot.getOpenAI();
+        const completion = await openai.chat.completions.create({
+            model: "gpt-3.5-turbo",
+            messages: [
+                {role: "system", content: "Generate a personalized greeting."},
+                {role: "user", content: `My name is ${message.text}`}
+            ]
+        });
 
-		await bot.sendText(message.chatId, completion.choices[0]?.message.content || "Hello!");
-		return "main_chat"; // Transition to main chat state
-	}
+        await bot.sendText(message.chatId, completion.choices[0]?.message.content || "Hello!");
+        return "main_chat"; // Transition to main chat state
+    }
 });
 ```
 
@@ -350,22 +448,23 @@ const openai = bot.getOpenAI();
 
 // Check if current model supports images
 if (bot.supportsImages()) {
-	// Handle image-based workflow
+    // Handle image-based workflow
 }
 ```
 
 ## Demo Bot Example
 
-See [our demo chatbot](https://github.com/green-api/whatsapp-demo-chatgpt-js) for a comprehensive demo chatbot, which showcases many features:
+See [our demo chatbot](https://github.com/green-api/whatsapp-demo-chatgpt-js) for a comprehensive demo chatbot, which
+showcases many features:
 
 ```typescript
 import {
-	GPTSessionData,
-	ImageMessageHandler,
-	ProcessMessageMiddleware,
-	ProcessResponseMiddleware,
-	WhatsappGptBot,
-	OpenAIModel,
+    GPTSessionData,
+    ImageMessageHandler,
+    ProcessMessageMiddleware,
+    ProcessResponseMiddleware,
+    WhatsappGptBot,
+    OpenAIModel,
 } from "@green-api/whatsapp-chatgpt";
 import * as dotenv from "dotenv";
 import { Message } from "@green-api/whatsapp-chatbot-js-v2";
@@ -376,51 +475,51 @@ dotenv.config();
 
 // Custom image handler that provides enhanced descriptions
 class EnhancedImageHandler extends ImageMessageHandler {
-	async processMessage(message: Message, openai: OpenAI, model: OpenAIModel): Promise<any> {
-		const result = await super.processMessage(message, openai, model);
+    async processMessage(message: Message, openai: OpenAI, model: OpenAIModel): Promise<any> {
+        const result = await super.processMessage(message, openai, model);
 
-		if (typeof result === "string") {
-			return result.replace(
-				"[The user sent an image",
-				"[The user sent an image. Tell them that you are not the model they should be using"
-			);
-		}
+        if (typeof result === "string") {
+            return result.replace(
+                    "[The user sent an image",
+                    "[The user sent an image. Tell them that you are not the model they should be using"
+            );
+        }
 
-		return result;
-	}
+        return result;
+    }
 }
 
 // Middleware examples
 
 // Logging middleware
 const loggingMessageMiddleware: ProcessMessageMiddleware = async (
-	message, messageContent, messages, _
+        message, messageContent, messages, _
 ) => {
-	console.log(`[${new Date().toISOString()}] User (${message.chatId}): `,
-		typeof messageContent === "string"
-			? messageContent
-			: JSON.stringify(messageContent));
+    console.log(`[${new Date().toISOString()}] User (${message.chatId}): `,
+            typeof messageContent === "string"
+                    ? messageContent
+                    : JSON.stringify(messageContent));
 
-	return {messageContent, messages};
+    return {messageContent, messages};
 };
 
 // Initialize the bot
 const bot = new WhatsappGptBot({
-	idInstance: process.env.INSTANCE_ID || "",
-	apiTokenInstance: process.env.INSTANCE_TOKEN || "",
-	openaiApiKey: process.env.OPENAI_API_KEY || "",
-	model: "gpt-4o",
-	systemMessage: "You are a helpful WhatsApp assistant created by GREEN-API",
-	maxHistoryLength: 15,
-	temperature: 0.5,
-	handlersFirst: true,
-	clearWebhookQueueOnStart: true,
+    idInstance: process.env.INSTANCE_ID || "",
+    apiTokenInstance: process.env.INSTANCE_TOKEN || "",
+    openaiApiKey: process.env.OPENAI_API_KEY || "",
+    model: "gpt-4o",
+    systemMessage: "You are a helpful WhatsApp assistant created by GREEN-API",
+    maxHistoryLength: 15,
+    temperature: 0.5,
+    handlersFirst: true,
+    clearWebhookQueueOnStart: true,
 });
 
 // Command handlers
 bot.onText("/help", async (message, _) => {
-	const helpText = `*WhatsAppGPT Demo Bot*\n\nAvailable commands:\n- /help - Show this help message\n- /clear - Clear conversation history`;
-	await bot.sendText(message.chatId, helpText);
+    const helpText = `*WhatsAppGPT Demo Bot*\n\nAvailable commands:\n- /help - Show this help message\n- /clear - Clear conversation history`;
+    await bot.sendText(message.chatId, helpText);
 });
 
 // Register middleware
@@ -450,52 +549,52 @@ import { WhatsappGptBot } from '@green-api/whatsapp-chatgpt';
 import { detectLanguage } from './language-detector';
 
 const bot = new WhatsappGptBot({
-	idInstance: "your-instance-id",
-	apiTokenInstance: "your-token",
-	openaiApiKey: "your-openai-api-key",
-	model: "gpt-4o"
+    idInstance: "your-instance-id",
+    apiTokenInstance: "your-token",
+    openaiApiKey: "your-openai-api-key",
+    model: "gpt-4o"
 });
 
 // Add language detection middleware
 bot.addMessageMiddleware(async (message, content, messages, sessionData) => {
-	// Only process text messages
-	if (message.type !== 'text' || !message.text) {
-		return {messageContent: content, messages};
-	}
+    // Only process text messages
+    if (message.type !== 'text' || !message.text) {
+        return {messageContent: content, messages};
+    }
 
-	// Detect language
-	const language = await detectLanguage(message.text);
+    // Detect language
+    const language = await detectLanguage(message.text);
 
-	// Store language in session
-	if (!sessionData.context) {
-		sessionData.context = {variables: {}};
-	}
-	sessionData.context.variables.language = language;
+    // Store language in session
+    if (!sessionData.context) {
+        sessionData.context = {variables: {}};
+    }
+    sessionData.context.variables.language = language;
 
-	// Update system message with language instruction
-	const languageInstruction = `User is writing in ${language}. Reply in the same language.`;
+    // Update system message with language instruction
+    const languageInstruction = `User is writing in ${language}. Reply in the same language.`;
 
-	// Find system message
-	const systemIndex = messages.findIndex(m => m.role === 'system');
+    // Find system message
+    const systemIndex = messages.findIndex(m => m.role === 'system');
 
-	if (systemIndex >= 0) {
-		// Update existing system message
-		const updatedMessages = [...messages];
-		const currentContent = updatedMessages[systemIndex].content;
-		if (typeof currentContent === 'string' && !currentContent.includes('User is writing in')) {
-			updatedMessages[systemIndex].content = `${currentContent} ${languageInstruction}`;
-		}
-		return {messageContent: content, messages: updatedMessages};
-	} else {
-		// Add new system message
-		return {
-			messageContent: content,
-			messages: [
-				{role: 'system', content: languageInstruction},
-				...messages
-			]
-		};
-	}
+    if (systemIndex >= 0) {
+        // Update existing system message
+        const updatedMessages = [...messages];
+        const currentContent = updatedMessages[systemIndex].content;
+        if (typeof currentContent === 'string' && !currentContent.includes('User is writing in')) {
+            updatedMessages[systemIndex].content = `${currentContent} ${languageInstruction}`;
+        }
+        return {messageContent: content, messages: updatedMessages};
+    } else {
+        // Add new system message
+        return {
+            messageContent: content,
+            messages: [
+                {role: 'system', content: languageInstruction},
+                ...messages
+            ]
+        };
+    }
 });
 
 // Start the bot

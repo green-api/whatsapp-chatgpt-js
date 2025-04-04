@@ -6,7 +6,7 @@
 
 # Class: ImageMessageHandler
 
-Defined in: [handlers/message-handlers.ts:39](https://github.com/green-api/whatsapp-chatgpt-js/blob/144b3e2baae49a260200b70637f606416abe2026/src/handlers/message-handlers.ts#L39)
+Defined in: [handlers/message-handlers.ts:39](https://github.com/green-api/whatsapp-chatgpt-js/blob/a8d23283a95688db13d271291301a016d80fdc7a/src/handlers/message-handlers.ts#L39)
 
 Handles image messages
 
@@ -30,7 +30,7 @@ Handles image messages
 
 > **canHandle**(`message`): `boolean`
 
-Defined in: [handlers/message-handlers.ts:40](https://github.com/green-api/whatsapp-chatgpt-js/blob/144b3e2baae49a260200b70637f606416abe2026/src/handlers/message-handlers.ts#L40)
+Defined in: [handlers/message-handlers.ts:40](https://github.com/green-api/whatsapp-chatgpt-js/blob/a8d23283a95688db13d271291301a016d80fdc7a/src/handlers/message-handlers.ts#L40)
 
 #### Parameters
 
@@ -52,7 +52,7 @@ Defined in: [handlers/message-handlers.ts:40](https://github.com/green-api/whats
 
 > **processMessage**(`message`, `_`, `model`): `Promise`\<`any`\>
 
-Defined in: [handlers/message-handlers.ts:44](https://github.com/green-api/whatsapp-chatgpt-js/blob/144b3e2baae49a260200b70637f606416abe2026/src/handlers/message-handlers.ts#L44)
+Defined in: [handlers/message-handlers.ts:44](https://github.com/green-api/whatsapp-chatgpt-js/blob/a8d23283a95688db13d271291301a016d80fdc7a/src/handlers/message-handlers.ts#L44)
 
 #### Parameters
 
