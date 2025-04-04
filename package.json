@@ -1,6 +1,6 @@
 {
   "name": "@green-api/whatsapp-chatgpt",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "WhatsApp Bot Library using OpenAI's GPT",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
