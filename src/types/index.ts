@@ -47,20 +47,6 @@ export interface GPTSessionData {
 	};
 }
 
-/**
- * Options for creating message content
- */
-export interface MessageProcessingOptions {
-	/** Whether to use message history */
-	useHistory?: boolean;
-
-	/** Custom context to inject into the message */
-	context?: string;
-
-	/** Override the model for this specific message */
-	modelOverride?: OpenAIModel;
-}
-
 export type OpenAIModel =
 // GPT-4 models
 	| "gpt-4"
