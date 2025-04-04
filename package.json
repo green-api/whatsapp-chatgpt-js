@@ -38,7 +38,7 @@
   "homepage": "https://github.com/green-api/whatsapp-chatgpt-js#readme",
   "dependencies": {
     "@green-api/whatsapp-chatbot-js-v2": "^1.4.0",
-    "openai": "^4.85.4",
+    "openai": "4.85.4",
     "tsx": "^4.19.2"
   },
   "devDependencies": {

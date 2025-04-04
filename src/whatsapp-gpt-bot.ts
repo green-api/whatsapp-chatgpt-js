@@ -5,7 +5,6 @@ import {
 	GPTBotConfig,
 	GPTSessionData,
 	isImageCapableModel,
-	MessageProcessingOptions,
 	OpenAIModel,
 } from "./types";
 import { MiddlewareManager } from "./middleware/middleware";
@@ -17,7 +16,7 @@ import { MessageHandler, MessageHandlerRegistry } from "./handlers/message-handl
 export class WhatsappGptBot extends WhatsAppBot<GPTSessionData> {
 	private readonly openai: OpenAI;
 	private readonly maxHistoryLength: number;
-	private readonly systemMessage: string;
+	public readonly systemMessage: string;
 	private readonly model: OpenAIModel;
 	private readonly temperature: number;
 	private readonly errorMessage: string;
@@ -49,6 +48,81 @@ export class WhatsappGptBot extends WhatsAppBot<GPTSessionData> {
 		this.messageHandlers = new MessageHandlerRegistry(this.openai, this.model);
 
 		this.addState(this.createChatState());
+	}
+
+	/**
+	 * Processes a message through the GPT model without using internal state management.
+	 * Handles message preprocessing, GPT model interaction, and response processing.
+	 *
+	 * @param message - The message to process
+	 * @param sessionData - Current session data containing message history and metadata.
+	 *                     Defaults to empty messages array and current timestamp.
+	 * @returns Object containing the processed response and updated session data
+	 *
+	 * @example
+	 * ```typescript
+	 * const { response, updatedData } = await gptBot.processMessage(message, {
+	 *     messages: [{ role: "system", content: "You are a helpful assistant" }],
+	 *     lastActivity: Date.now()
+	 * });
+	 * await bot.sendText(message.chatId, response);
+	 * ```
+	 */
+	public async processMessage(message: Message, sessionData: GPTSessionData = {
+		messages: [],
+		lastActivity: Date.now(),
+	}): Promise<{
+		response: string;
+		updatedData: GPTSessionData;
+	}> {
+		try {
+			const {messageContent, messages} = await this.processMessageContent(message, sessionData);
+
+			messages.push({
+				role: "user",
+				content: messageContent,
+			});
+
+			if (messages.length > this.maxHistoryLength + 1) {
+				const systemMsg = messages[0];
+				messages.splice(1, messages.length - this.maxHistoryLength);
+				messages[0] = systemMsg;
+			}
+
+			const completion = await this.openai.chat.completions.create({
+				model: this.model,
+				messages: messages,
+				temperature: this.temperature,
+				max_tokens: 1000,
+			});
+
+			const assistantMessage = completion.choices[0]?.message || {content: "No response generated"};
+			const response = assistantMessage.content || "No response generated";
+
+			const {response: processedResponse, messages: processedMessages} =
+				await this.middleware.processResponse(response, messages, sessionData);
+
+			processedMessages.push({
+				role: "assistant",
+				content: processedResponse,
+			});
+
+			return {
+				response: processedResponse,
+				updatedData: {
+					messages: processedMessages,
+					lastActivity: Date.now(),
+					userData: sessionData.userData || {},
+					context: sessionData.context || {},
+				},
+			};
+		} catch (error) {
+			console.error("Error processing message:", error);
+			return {
+				response: this.errorMessage,
+				updatedData: sessionData,
+			};
+		}
 	}
 
 	/**
@@ -112,7 +186,6 @@ export class WhatsappGptBot extends WhatsAppBot<GPTSessionData> {
 	private async processMessageContent(
 		message: Message,
 		sessionData: GPTSessionData,
-		options: MessageProcessingOptions = {},
 	): Promise<{ messageContent: any, messages: any[] }> {
 		try {
 			const initialContent = await this.messageHandlers.processMessage(message);
