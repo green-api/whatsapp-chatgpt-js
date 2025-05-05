@@ -1,6 +1,7 @@
 # Библиотека WhatsApp GPT Bot
 
-Современная библиотека для создания WhatsApp-бота с интеграцией OpenAI GPT, построенная на базе GREEN-API.
+Современная библиотека для создания WhatsApp-бота с интеграцией OpenAI GPT, построенная на базе GREEN-API и
+библиотеки @green-api/whatsapp-chatbot-js-v2.
 
 ## Особенности
 
@@ -76,7 +77,7 @@ const gptBot = new WhatsappGptBot({
 });
 
 // Не нужно вызывать start() - просто используйте processMessage когда нужно
-const { response, updatedData } = await gptBot.processMessage(message, sessionData);
+const {response, updatedData} = await gptBot.processMessage(message, sessionData);
 
 // Обработайте ответ своим способом
 await yourBot.sendText(message.chatId, response);
@@ -100,21 +101,21 @@ const gptState: State<CustomSessionData> = {
     async onEnter(message, data) {
         // Инициализация сессии GPT
         data.gptSession = {
-            messages: [{ role: "system", content: gptBot.systemMessage }],
+            messages: [{role: "system", content: gptBot.systemMessage}],
             lastActivity: Date.now()
         };
         await bot.sendText(message.chatId, "Чат с GPT начат!");
     },
     async onMessage(message, data) {
         // Обработка сообщений с помощью GPT-бота
-        const { response, updatedData } = await gptBot.processMessage(
-            message, 
-            data.gptSession
+        const {response, updatedData} = await gptBot.processMessage(
+                message,
+                data.gptSession
         );
-        
+
         await bot.sendText(message.chatId, response);
         data.gptSession = updatedData;
-        
+
         return undefined;  // Остаться в текущем состоянии
     }
 };
