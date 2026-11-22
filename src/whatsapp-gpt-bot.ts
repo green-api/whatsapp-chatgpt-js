@@ -1,4 +1,4 @@
-import { WhatsAppBot, Message, State } from "@green-api/whatsapp-chatbot-js-v2";
+import { WhatsAppBot, Message, State, CallEvent } from "@green-api/whatsapp-chatbot-js-v2";
 import OpenAI from "openai";
 import {
 	DEFAULT_MODEL,
@@ -6,9 +6,31 @@ import {
 	GPTSessionData,
 	isImageCapableModel,
 	OpenAIModel,
+	VoiceCallsConfig,
+	VoiceSessionOptions,
 } from "./types";
 import { MiddlewareManager } from "./middleware/middleware";
 import { MessageHandler, MessageHandlerRegistry } from "./handlers/message-handlers";
+import { RealtimeVoiceSession } from "./voice/realtime-session";
+import { REALTIME_SAMPLE_RATE, VOICE_DEFAULTS } from "./defaults";
+
+function voiceSessionOptions(voice: VoiceCallsConfig, apiKey: string, systemMessage: string): VoiceSessionOptions {
+	return {
+		apiKey,
+		model: voice.model ?? VOICE_DEFAULTS.model,
+		voice: voice.voice ?? VOICE_DEFAULTS.voice,
+		instructions: voice.instructions ?? (systemMessage || undefined),
+		greeting: voice.greeting ?? VOICE_DEFAULTS.greeting,
+		maxCallSeconds: voice.maxCallSeconds ?? VOICE_DEFAULTS.maxCallSeconds,
+		answerTimeoutMs: VOICE_DEFAULTS.answerTimeoutMs,
+		vad: {
+			threshold: voice.vad?.threshold ?? VOICE_DEFAULTS.vad.threshold,
+			prefixPaddingMs: voice.vad?.prefixPaddingMs ?? VOICE_DEFAULTS.vad.prefixPaddingMs,
+			silenceDurationMs: voice.vad?.silenceDurationMs ?? VOICE_DEFAULTS.vad.silenceDurationMs,
+			noiseReduction: voice.vad?.noiseReduction === undefined ? VOICE_DEFAULTS.vad.noiseReduction : voice.vad.noiseReduction,
+		},
+	};
+}
 
 /**
  * WhatsApp bot with GPT integration
@@ -22,6 +44,8 @@ export class WhatsappGptBot extends WhatsAppBot<GPTSessionData> {
 	private readonly errorMessage: string;
 	private readonly middleware: MiddlewareManager;
 	private readonly messageHandlers: MessageHandlerRegistry;
+	private readonly voiceOptions?: VoiceSessionOptions;
+	private voiceSession?: RealtimeVoiceSession;
 
 	/**
 	 * Creates a new GPT WhatsApp bot instance
@@ -30,6 +54,7 @@ export class WhatsappGptBot extends WhatsAppBot<GPTSessionData> {
 		super({
 			...config,
 			defaultState: "chat",
+			calls: config.voiceCalls ? {...config.calls, pcmSampleRate: REALTIME_SAMPLE_RATE} : config.calls,
 		});
 
 		this.openai = new OpenAI({
@@ -48,6 +73,79 @@ export class WhatsappGptBot extends WhatsAppBot<GPTSessionData> {
 		this.messageHandlers = new MessageHandlerRegistry(this.openai, this.model);
 
 		this.addState(this.createChatState());
+
+		if (config.voiceCalls) {
+			this.voiceOptions = voiceSessionOptions(config.voiceCalls, config.openaiApiKey, this.systemMessage);
+			if (config.voiceCalls.answerIncoming !== false) {
+				this.onCall((call) => this.answerWithVoice(call));
+			}
+		}
+	}
+
+	/**
+	 * Calls a chat and talks with the person through the OpenAI Realtime model when they answer.
+	 * Needs voiceCalls in the config. Outgoing calls work only to chats that wrote or called in the last 72 hours.
+	 *
+	 * @param chatId - Chat to call
+	 * @returns The call ID. The conversation runs in the background until the call ends
+	 *
+	 * @example
+	 * ```typescript
+	 * bot.onText("call me", async (message) => {
+	 *   await bot.voiceCall(message.chatId);
+	 * });
+	 * ```
+	 */
+	async voiceCall(chatId: string): Promise<string> {
+		if (!this.voiceOptions) {
+			throw new Error("Voice calls are not configured, set voiceCalls in the bot config");
+		}
+		if (this.voiceSession) {
+			throw new Error("A voice call is already running");
+		}
+		await this.connectCalls();
+		const callId = await this.call(chatId);
+		this.runVoiceSession().catch((error) => console.error("Voice call failed:", error.message));
+		return callId;
+	}
+
+	/**
+	 * Whether a voice conversation with the model is running now.
+	 */
+	get inVoiceCall(): boolean {
+		return this.voiceSession !== undefined;
+	}
+
+	private async answerWithVoice(call: CallEvent): Promise<void> {
+		if (call.direction !== "incoming" || call.status !== "offer" || this.voiceSession) {
+			return;
+		}
+		try {
+			await this.connectCalls();
+			await this.acceptCall();
+			await this.runVoiceSession();
+		} catch (error) {
+			console.error("Voice call failed:", (error as Error).message);
+		}
+	}
+
+	private async runVoiceSession(): Promise<void> {
+		const calls = await this.connectCalls();
+		const session = new RealtimeVoiceSession(calls, this.voiceOptions!);
+		this.voiceSession = session;
+		try {
+			const end = await session.run();
+			if (end !== "call-ended") {
+				await this.hangUp().catch(() => undefined);
+			}
+		} catch (error) {
+			await this.hangUp().catch(() => undefined);
+			throw error;
+		} finally {
+			if (this.voiceSession === session) {
+				this.voiceSession = undefined;
+			}
+		}
 	}
 
 	/**

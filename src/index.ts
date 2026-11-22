@@ -18,4 +18,6 @@ export {
 
 export { Utils } from './utils/utils';
 
+export { RealtimeVoiceSession } from './voice/realtime-session';
+
 export * from './types';

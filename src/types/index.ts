@@ -22,7 +22,73 @@ export interface GPTBotConfig extends BotConfig {
 
 	/** Default reply when an error occurs */
 	errorMessage?: string;
+
+	/** Voice calls with an OpenAI Realtime model. Without it the bot does not answer calls */
+	voiceCalls?: VoiceCallsConfig;
 }
+
+/**
+ * Voice calls handled by an OpenAI Realtime model: the caller talks with the model, the model can be interrupted.
+ */
+export interface VoiceCallsConfig {
+	/** Realtime model. Default: gpt-realtime-2.1 */
+	model?: string;
+
+	/** Voice of the model, for example marin, cedar, alloy, ash, coral, sage, shimmer, verse. Default: marin */
+	voice?: string;
+
+	/** Instructions for the voice conversation. Default: systemMessage */
+	instructions?: string;
+
+	/** What the model is asked to say first when the call connects, false to wait until the caller speaks */
+	greeting?: string | false;
+
+	/** Whether to answer incoming calls with the model. Default: true */
+	answerIncoming?: boolean;
+
+	/** Longest call in seconds, the bot hangs up after it. Default: 600 */
+	maxCallSeconds?: number;
+
+	/** Voice activity detection of the caller's speech */
+	vad?: VoiceActivityConfig;
+}
+
+/**
+ * Settings of the server voice activity detection.
+ */
+export interface VoiceActivityConfig {
+	/** Speech threshold from 0 to 1, higher needs louder speech. Default: 0.7 */
+	threshold?: number;
+
+	/** Audio kept before the detected speech, in milliseconds. Default: 400 */
+	prefixPaddingMs?: number;
+
+	/** Silence that ends the caller's turn, in milliseconds. Default: 800 */
+	silenceDurationMs?: number;
+
+	/** Noise reduction of the caller's audio, null to turn it off. Default: near_field */
+	noiseReduction?: "near_field" | "far_field" | null;
+}
+
+/**
+ * Voice call settings with the defaults applied.
+ */
+export interface VoiceSessionOptions {
+	apiKey: string;
+	model: string;
+	voice: string;
+	instructions?: string;
+	greeting: string | false;
+	maxCallSeconds: number;
+	answerTimeoutMs: number;
+	vad: Required<VoiceActivityConfig>;
+}
+
+/**
+ * Why a voice session ended: the call ended, the model ended the call after saying goodbye, the OpenAI connection closed,
+ * or the call reached maxCallSeconds.
+ */
+export type VoiceSessionEnd = "call-ended" | "model-ended" | "realtime-closed" | "max-duration";
 
 /**
  * Session data structure with conversation history

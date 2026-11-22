@@ -9,6 +9,7 @@ A modern, state-based WhatsApp bot library with OpenAI GPT integration, built on
 - Support for multiple GPT models (GPT-3.5, GPT-4, GPT-4o)
 - Multimodal capabilities with image processing support
 - Voice message transcription
+- Voice calls with OpenAI Realtime models: the bot answers and makes WhatsApp calls and talks with the person
 - Comprehensive message handling for various WhatsApp media types
 - Middleware architecture for customizing message and response processing
 - Built-in conversation history management
@@ -165,6 +166,9 @@ interface GPTBotConfig extends BotConfig {
     /** Default reply when an error occurs */
     errorMessage?: string;
 
+    /** Voice calls with an OpenAI Realtime model, see Voice Calls below */
+    voiceCalls?: VoiceCallsConfig;
+
     // All configuration options from the base WhatsAppBot are also available
     // See @green-api/whatsapp-chatbot-js-v2 for additional options
 }
@@ -193,6 +197,69 @@ const bot = new WhatsappGptBot({
     sessionTimeout: 300,
     // See base library documentation for more options
 });
+```
+
+## Voice Calls
+
+The bot can answer and make WhatsApp voice calls and talk with the person through an OpenAI Realtime model. The caller's
+speech goes to the model, the model's speech goes into the call, and the caller can interrupt the model at any time.
+Calls need a GREEN-API plan with calls and the optional audio dependencies:
+
+```bash
+npm install werift@^0.25.2 ws opusscript
+```
+
+```typescript
+const bot = new WhatsappGptBot({
+    idInstance: "your-instance-id",
+    apiTokenInstance: "your-token",
+    openaiApiKey: "your-openai-api-key",
+    model: "gpt-4o",
+    systemMessage: "You are a helpful assistant of a coffee shop.",
+    handlersFirst: true,
+    voiceCalls: {
+        voice: "marin",
+        greeting: "Greet the caller and ask how you can help.",
+    },
+});
+
+bot.onText("call me", async (message) => {
+    await bot.voiceCall(message.chatId);
+});
+
+bot.start();
+```
+
+- With `voiceCalls` set, the bot answers incoming calls with the model. Set `answerIncoming: false` to only make calls.
+- `bot.voiceCall(chatId)` calls a chat and starts the conversation when the person answers. Outgoing calls work only to
+  chats that wrote or called in the last 72 hours. `handlersFirst: true` lets the `onText` handler run before the chat.
+- The call ends when the person hangs up, when the model says goodbye and hangs up at the end of the conversation, or
+  after `maxCallSeconds`.
+
+```typescript
+interface VoiceCallsConfig {
+    /** Realtime model (default: gpt-realtime-2.1) */
+    model?: string;
+
+    /** Voice: marin, cedar, alloy, ash, ballad, coral, echo, sage, shimmer, verse (default: marin) */
+    voice?: string;
+
+    /** Instructions for the voice conversation (default: systemMessage) */
+    instructions?: string;
+
+    /** What the model says first when the call connects, false to wait for the caller (default: a short greeting) */
+    greeting?: string | false;
+
+    /** Answer incoming calls with the model (default: true) */
+    answerIncoming?: boolean;
+
+    /** Longest call in seconds (default: 600) */
+    maxCallSeconds?: number;
+
+    /** Detection of the caller's speech: threshold (0.7), prefixPaddingMs (400), silenceDurationMs (800),
+     * noiseReduction ("near_field", "far_field" or null) */
+    vad?: VoiceActivityConfig;
+}
 ```
 
 ## Message Handling

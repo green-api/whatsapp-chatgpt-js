@@ -37,15 +37,35 @@
   },
   "homepage": "https://github.com/green-api/whatsapp-chatgpt-js#readme",
   "dependencies": {
-    "@green-api/whatsapp-chatbot-js-v2": "^1.4.0",
+    "@green-api/whatsapp-api-client-js-v2": "^1.3.0",
+    "@green-api/whatsapp-chatbot-js-v2": "^2.0.0",
     "openai": "4.85.4",
     "tsx": "^4.19.2"
   },
+  "peerDependencies": {
+    "opusscript": "^0.1.1",
+    "werift": "^0.25.2",
+    "ws": "^8.18.3"
+  },
+  "peerDependenciesMeta": {
+    "opusscript": {
+      "optional": true
+    },
+    "werift": {
+      "optional": true
+    },
+    "ws": {
+      "optional": true
+    }
+  },
   "devDependencies": {
+    "@types/node": "^22.20.5",
+    "@types/ws": "^8.18.2",
     "cross-env": "^7.0.3",
     "rimraf": "^6.0.1",
     "typedoc": "^0.27.9",
-    "typedoc-plugin-markdown": "^4.4.2"
+    "typedoc-plugin-markdown": "^4.4.2",
+    "ws": "^8.23.0"
   },
   "engines": {
     "node": ">=20.0.0"

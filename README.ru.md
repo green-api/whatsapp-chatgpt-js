@@ -9,6 +9,7 @@
 - Поддержка различных моделей GPT (GPT-3.5, GPT-4, GPT-4o)
 - Мультимодальные возможности с поддержкой обработки изображений
 - Транскрипция голосовых сообщений
+- Голосовые звонки с моделями OpenAI Realtime: бот отвечает на звонки WhatsApp, звонит сам и разговаривает с человеком
 - Комплексная обработка различных типов медиа сообщений WhatsApp
 - Архитектура промежуточного ПО (middleware) для настройки обработки сообщений и ответов
 - Встроенное управление историей разговоров
@@ -166,6 +167,9 @@ interface GPTBotConfig extends BotConfig {
     /** Ответ по умолчанию при возникновении ошибки */
     errorMessage?: string;
 
+    /** Голосовые звонки с моделью OpenAI Realtime, см. раздел "Голосовые звонки" */
+    voiceCalls?: VoiceCallsConfig;
+
     // Все параметры конфигурации из базовой библиотеки WhatsAppBot также доступны
     // См. документацию @green-api/whatsapp-chatbot-js-v2 для дополнительных опций
 }
@@ -194,6 +198,70 @@ const bot = new WhatsappGptBot({
     sessionTimeout: 300,
     // См. документацию базовой библиотеки для дополнительных опций
 });
+```
+
+## Голосовые звонки
+
+Бот может отвечать на голосовые звонки WhatsApp, звонить сам и разговаривать с человеком через модель OpenAI Realtime.
+Речь собеседника уходит в модель, речь модели звучит в звонке, а собеседник может перебить модель в любой момент.
+Для звонков нужен тариф GREEN-API со звонками и необязательные зависимости для звука:
+
+```bash
+npm install werift@^0.25.2 ws opusscript
+```
+
+```typescript
+const bot = new WhatsappGptBot({
+    idInstance: "your-instance-id",
+    apiTokenInstance: "your-token",
+    openaiApiKey: "your-openai-api-key",
+    model: "gpt-4o",
+    systemMessage: "Вы - помощник кофейни.",
+    handlersFirst: true,
+    voiceCalls: {
+        voice: "marin",
+        greeting: "Поздоровайся с собеседником и спроси, чем помочь.",
+    },
+});
+
+bot.onText("call me", async (message) => {
+    await bot.voiceCall(message.chatId);
+});
+
+bot.start();
+```
+
+- С `voiceCalls` бот отвечает на входящие звонки моделью. `answerIncoming: false` оставляет только исходящие звонки.
+- `bot.voiceCall(chatId)` звонит в чат и начинает разговор, когда человек ответит. Исходящие звонки работают только в
+  чаты, которые писали или звонили за последние 72 часа. `handlersFirst: true` запускает обработчик `onText` раньше
+  чата.
+- Звонок заканчивается, когда человек кладёт трубку, когда модель прощается и кладёт трубку в конце разговора, или через
+  `maxCallSeconds`.
+
+```typescript
+interface VoiceCallsConfig {
+    /** Модель Realtime (по умолчанию: gpt-realtime-2.1) */
+    model?: string;
+
+    /** Голос: marin, cedar, alloy, ash, ballad, coral, echo, sage, shimmer, verse (по умолчанию: marin) */
+    voice?: string;
+
+    /** Инструкции для голосового разговора (по умолчанию: systemMessage) */
+    instructions?: string;
+
+    /** Что модель говорит первым после соединения, false чтобы ждать собеседника (по умолчанию: короткое приветствие) */
+    greeting?: string | false;
+
+    /** Отвечать на входящие звонки моделью (по умолчанию: true) */
+    answerIncoming?: boolean;
+
+    /** Максимальная длительность звонка в секундах (по умолчанию: 600) */
+    maxCallSeconds?: number;
+
+    /** Распознавание речи собеседника: threshold (0.7), prefixPaddingMs (400), silenceDurationMs (800),
+     * noiseReduction ("near_field", "far_field" или null) */
+    vad?: VoiceActivityConfig;
+}
 ```
 
 ## Обработка сообщений
