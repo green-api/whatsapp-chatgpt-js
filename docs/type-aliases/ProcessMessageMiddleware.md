@@ -8,7 +8,7 @@
 
 > **ProcessMessageMiddleware**: (`message`, `messageContent`, `messages`, `sessionData`) => `Promise`\<\{ `messageContent`: `any`; `messages`: `ChatCompletionMessageParam`[]; \}\>
 
-Defined in: [middleware/middleware.ts:8](https://github.com/green-api/whatsapp-chatgpt-js/blob/a8d23283a95688db13d271291301a016d80fdc7a/src/middleware/middleware.ts#L8)
+Defined in: [middleware/middleware.ts:8](https://github.com/green-api/whatsapp-chatgpt-js/blob/1fdcaadfd7062f356e7347966f180de931a2fd84/src/middleware/middleware.ts#L8)
 
 Middleware function for processing messages before sending to OpenAI
 

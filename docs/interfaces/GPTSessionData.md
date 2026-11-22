@@ -6,7 +6,7 @@
 
 # Interface: GPTSessionData
 
-Defined in: [types/index.ts:30](https://github.com/green-api/whatsapp-chatgpt-js/blob/a8d23283a95688db13d271291301a016d80fdc7a/src/types/index.ts#L30)
+Defined in: [types/index.ts:96](https://github.com/green-api/whatsapp-chatgpt-js/blob/1fdcaadfd7062f356e7347966f180de931a2fd84/src/types/index.ts#L96)
 
 Session data structure with conversation history
 
@@ -16,7 +16,7 @@ Session data structure with conversation history
 
 > `optional` **context**: `object`
 
-Defined in: [types/index.ts:41](https://github.com/green-api/whatsapp-chatgpt-js/blob/a8d23283a95688db13d271291301a016d80fdc7a/src/types/index.ts#L41)
+Defined in: [types/index.ts:107](https://github.com/green-api/whatsapp-chatgpt-js/blob/1fdcaadfd7062f356e7347966f180de931a2fd84/src/types/index.ts#L107)
 
 Context for the current conversation
 
@@ -38,7 +38,7 @@ Custom context variables
 
 > **lastActivity**: `number`
 
-Defined in: [types/index.ts:35](https://github.com/green-api/whatsapp-chatgpt-js/blob/a8d23283a95688db13d271291301a016d80fdc7a/src/types/index.ts#L35)
+Defined in: [types/index.ts:101](https://github.com/green-api/whatsapp-chatgpt-js/blob/1fdcaadfd7062f356e7347966f180de931a2fd84/src/types/index.ts#L101)
 
 Timestamp of last activity
 
@@ -48,7 +48,7 @@ Timestamp of last activity
 
 > **messages**: `ChatCompletionMessageParam`[]
 
-Defined in: [types/index.ts:32](https://github.com/green-api/whatsapp-chatgpt-js/blob/a8d23283a95688db13d271291301a016d80fdc7a/src/types/index.ts#L32)
+Defined in: [types/index.ts:98](https://github.com/green-api/whatsapp-chatgpt-js/blob/1fdcaadfd7062f356e7347966f180de931a2fd84/src/types/index.ts#L98)
 
 Conversation history
 
@@ -58,6 +58,6 @@ Conversation history
 
 > `optional` **userData**: `Record`\<`string`, `any`\>
 
-Defined in: [types/index.ts:38](https://github.com/green-api/whatsapp-chatgpt-js/blob/a8d23283a95688db13d271291301a016d80fdc7a/src/types/index.ts#L38)
+Defined in: [types/index.ts:104](https://github.com/green-api/whatsapp-chatgpt-js/blob/1fdcaadfd7062f356e7347966f180de931a2fd84/src/types/index.ts#L104)
 
 Custom user state data

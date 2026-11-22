@@ -6,7 +6,7 @@
 
 # Class: WhatsappGptBot
 
-Defined in: [whatsapp-gpt-bot.ts:16](https://github.com/green-api/whatsapp-chatgpt-js/blob/a8d23283a95688db13d271291301a016d80fdc7a/src/whatsapp-gpt-bot.ts#L16)
+Defined in: [whatsapp-gpt-bot.ts:38](https://github.com/green-api/whatsapp-chatgpt-js/blob/1fdcaadfd7062f356e7347966f180de931a2fd84/src/whatsapp-gpt-bot.ts#L38)
 
 WhatsApp bot with GPT integration
 
@@ -20,7 +20,7 @@ WhatsApp bot with GPT integration
 
 > **new WhatsappGptBot**(`config`): [`WhatsappGptBot`](WhatsappGptBot.md)
 
-Defined in: [whatsapp-gpt-bot.ts:29](https://github.com/green-api/whatsapp-chatgpt-js/blob/a8d23283a95688db13d271291301a016d80fdc7a/src/whatsapp-gpt-bot.ts#L29)
+Defined in: [whatsapp-gpt-bot.ts:53](https://github.com/green-api/whatsapp-chatgpt-js/blob/1fdcaadfd7062f356e7347966f180de931a2fd84/src/whatsapp-gpt-bot.ts#L53)
 
 Creates a new GPT WhatsApp bot instance
 
@@ -44,7 +44,23 @@ Creates a new GPT WhatsApp bot instance
 
 > `readonly` **systemMessage**: `string`
 
-Defined in: [whatsapp-gpt-bot.ts:19](https://github.com/green-api/whatsapp-chatgpt-js/blob/a8d23283a95688db13d271291301a016d80fdc7a/src/whatsapp-gpt-bot.ts#L19)
+Defined in: [whatsapp-gpt-bot.ts:41](https://github.com/green-api/whatsapp-chatgpt-js/blob/1fdcaadfd7062f356e7347966f180de931a2fd84/src/whatsapp-gpt-bot.ts#L41)
+
+## Accessors
+
+### inVoiceCall
+
+#### Get Signature
+
+> **get** **inVoiceCall**(): `boolean`
+
+Defined in: [whatsapp-gpt-bot.ts:115](https://github.com/green-api/whatsapp-chatgpt-js/blob/1fdcaadfd7062f356e7347966f180de931a2fd84/src/whatsapp-gpt-bot.ts#L115)
+
+Whether a voice conversation with the model is running now.
+
+##### Returns
+
+`boolean`
 
 ## Methods
 
@@ -52,7 +68,7 @@ Defined in: [whatsapp-gpt-bot.ts:19](https://github.com/green-api/whatsapp-chatg
 
 > **addMessageMiddleware**(`middleware`): `this`
 
-Defined in: [whatsapp-gpt-bot.ts:131](https://github.com/green-api/whatsapp-chatgpt-js/blob/a8d23283a95688db13d271291301a016d80fdc7a/src/whatsapp-gpt-bot.ts#L131)
+Defined in: [whatsapp-gpt-bot.ts:229](https://github.com/green-api/whatsapp-chatgpt-js/blob/1fdcaadfd7062f356e7347966f180de931a2fd84/src/whatsapp-gpt-bot.ts#L229)
 
 Add middleware to process messages before sending to the model
 
@@ -72,7 +88,7 @@ Add middleware to process messages before sending to the model
 
 > **addResponseMiddleware**(`middleware`): `this`
 
-Defined in: [whatsapp-gpt-bot.ts:139](https://github.com/green-api/whatsapp-chatgpt-js/blob/a8d23283a95688db13d271291301a016d80fdc7a/src/whatsapp-gpt-bot.ts#L139)
+Defined in: [whatsapp-gpt-bot.ts:237](https://github.com/green-api/whatsapp-chatgpt-js/blob/1fdcaadfd7062f356e7347966f180de931a2fd84/src/whatsapp-gpt-bot.ts#L237)
 
 Add middleware to process responses before sending to the user
 
@@ -92,7 +108,7 @@ Add middleware to process responses before sending to the user
 
 > **getModel**(): [`OpenAIModel`](../type-aliases/OpenAIModel.md)
 
-Defined in: [whatsapp-gpt-bot.ts:162](https://github.com/green-api/whatsapp-chatgpt-js/blob/a8d23283a95688db13d271291301a016d80fdc7a/src/whatsapp-gpt-bot.ts#L162)
+Defined in: [whatsapp-gpt-bot.ts:260](https://github.com/green-api/whatsapp-chatgpt-js/blob/1fdcaadfd7062f356e7347966f180de931a2fd84/src/whatsapp-gpt-bot.ts#L260)
 
 Get the current model being used
 
@@ -106,7 +122,7 @@ Get the current model being used
 
 > **getOpenAI**(): `OpenAI`
 
-Defined in: [whatsapp-gpt-bot.ts:155](https://github.com/green-api/whatsapp-chatgpt-js/blob/a8d23283a95688db13d271291301a016d80fdc7a/src/whatsapp-gpt-bot.ts#L155)
+Defined in: [whatsapp-gpt-bot.ts:253](https://github.com/green-api/whatsapp-chatgpt-js/blob/1fdcaadfd7062f356e7347966f180de931a2fd84/src/whatsapp-gpt-bot.ts#L253)
 
 Get the OpenAI client instance
 
@@ -120,7 +136,7 @@ Get the OpenAI client instance
 
 > **processMessage**(`message`, `sessionData`): `Promise`\<\{ `response`: `string`; `updatedData`: [`GPTSessionData`](../interfaces/GPTSessionData.md); \}\>
 
-Defined in: [whatsapp-gpt-bot.ts:71](https://github.com/green-api/whatsapp-chatgpt-js/blob/a8d23283a95688db13d271291301a016d80fdc7a/src/whatsapp-gpt-bot.ts#L71)
+Defined in: [whatsapp-gpt-bot.ts:169](https://github.com/green-api/whatsapp-chatgpt-js/blob/1fdcaadfd7062f356e7347966f180de931a2fd84/src/whatsapp-gpt-bot.ts#L169)
 
 Processes a message through the GPT model without using internal state management.
 Handles message preprocessing, GPT model interaction, and response processing.
@@ -162,7 +178,7 @@ await bot.sendText(message.chatId, response);
 
 > **registerMessageHandler**(`handler`, `index`?): `this`
 
-Defined in: [whatsapp-gpt-bot.ts:147](https://github.com/green-api/whatsapp-chatgpt-js/blob/a8d23283a95688db13d271291301a016d80fdc7a/src/whatsapp-gpt-bot.ts#L147)
+Defined in: [whatsapp-gpt-bot.ts:245](https://github.com/green-api/whatsapp-chatgpt-js/blob/1fdcaadfd7062f356e7347966f180de931a2fd84/src/whatsapp-gpt-bot.ts#L245)
 
 Register a custom message handler
 
@@ -186,7 +202,7 @@ Register a custom message handler
 
 > **replaceHandler**(`handlerType`, `newHandler`): `boolean`
 
-Defined in: [whatsapp-gpt-bot.ts:179](https://github.com/green-api/whatsapp-chatgpt-js/blob/a8d23283a95688db13d271291301a016d80fdc7a/src/whatsapp-gpt-bot.ts#L179)
+Defined in: [whatsapp-gpt-bot.ts:277](https://github.com/green-api/whatsapp-chatgpt-js/blob/1fdcaadfd7062f356e7347966f180de931a2fd84/src/whatsapp-gpt-bot.ts#L277)
 
 Replace a message handler with a new implementation
 
@@ -216,10 +232,43 @@ true if replacement succeeded, false otherwise
 
 > **supportsImages**(): `boolean`
 
-Defined in: [whatsapp-gpt-bot.ts:169](https://github.com/green-api/whatsapp-chatgpt-js/blob/a8d23283a95688db13d271291301a016d80fdc7a/src/whatsapp-gpt-bot.ts#L169)
+Defined in: [whatsapp-gpt-bot.ts:267](https://github.com/green-api/whatsapp-chatgpt-js/blob/1fdcaadfd7062f356e7347966f180de931a2fd84/src/whatsapp-gpt-bot.ts#L267)
 
 Check if the current model supports image processing
 
 #### Returns
 
 `boolean`
+
+***
+
+### voiceCall()
+
+> **voiceCall**(`chatId`): `Promise`\<`string`\>
+
+Defined in: [whatsapp-gpt-bot.ts:99](https://github.com/green-api/whatsapp-chatgpt-js/blob/1fdcaadfd7062f356e7347966f180de931a2fd84/src/whatsapp-gpt-bot.ts#L99)
+
+Calls a chat and talks with the person through the OpenAI Realtime model when they answer.
+Needs voiceCalls in the config. Outgoing calls work only to chats that wrote or called in the last 72 hours.
+
+#### Parameters
+
+##### chatId
+
+`string`
+
+Chat to call
+
+#### Returns
+
+`Promise`\<`string`\>
+
+The call ID. The conversation runs in the background until the call ends
+
+#### Example
+
+```typescript
+bot.onText("call me", async (message) => {
+  await bot.voiceCall(message.chatId);
+});
+```

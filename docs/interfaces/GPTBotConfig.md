@@ -6,7 +6,7 @@
 
 # Interface: GPTBotConfig
 
-Defined in: [types/index.ts:7](https://github.com/green-api/whatsapp-chatgpt-js/blob/a8d23283a95688db13d271291301a016d80fdc7a/src/types/index.ts#L7)
+Defined in: [types/index.ts:7](https://github.com/green-api/whatsapp-chatgpt-js/blob/1fdcaadfd7062f356e7347966f180de931a2fd84/src/types/index.ts#L7)
 
 Configuration options for the GPT WhatsApp bot
 
@@ -20,7 +20,7 @@ Configuration options for the GPT WhatsApp bot
 
 > `optional` **errorMessage**: `string`
 
-Defined in: [types/index.ts:24](https://github.com/green-api/whatsapp-chatgpt-js/blob/a8d23283a95688db13d271291301a016d80fdc7a/src/types/index.ts#L24)
+Defined in: [types/index.ts:24](https://github.com/green-api/whatsapp-chatgpt-js/blob/1fdcaadfd7062f356e7347966f180de931a2fd84/src/types/index.ts#L24)
 
 Default reply when an error occurs
 
@@ -30,7 +30,7 @@ Default reply when an error occurs
 
 > `optional` **maxHistoryLength**: `number`
 
-Defined in: [types/index.ts:15](https://github.com/green-api/whatsapp-chatgpt-js/blob/a8d23283a95688db13d271291301a016d80fdc7a/src/types/index.ts#L15)
+Defined in: [types/index.ts:15](https://github.com/green-api/whatsapp-chatgpt-js/blob/1fdcaadfd7062f356e7347966f180de931a2fd84/src/types/index.ts#L15)
 
 Maximum number of messages to keep in conversation history
 
@@ -40,7 +40,7 @@ Maximum number of messages to keep in conversation history
 
 > **model**: [`OpenAIModel`](../type-aliases/OpenAIModel.md)
 
-Defined in: [types/index.ts:12](https://github.com/green-api/whatsapp-chatgpt-js/blob/a8d23283a95688db13d271291301a016d80fdc7a/src/types/index.ts#L12)
+Defined in: [types/index.ts:12](https://github.com/green-api/whatsapp-chatgpt-js/blob/1fdcaadfd7062f356e7347966f180de931a2fd84/src/types/index.ts#L12)
 
 Model to use for chat completion
 
@@ -50,7 +50,7 @@ Model to use for chat completion
 
 > **openaiApiKey**: `string`
 
-Defined in: [types/index.ts:9](https://github.com/green-api/whatsapp-chatgpt-js/blob/a8d23283a95688db13d271291301a016d80fdc7a/src/types/index.ts#L9)
+Defined in: [types/index.ts:9](https://github.com/green-api/whatsapp-chatgpt-js/blob/1fdcaadfd7062f356e7347966f180de931a2fd84/src/types/index.ts#L9)
 
 OpenAI API key
 
@@ -60,7 +60,7 @@ OpenAI API key
 
 > `optional` **systemMessage**: `string`
 
-Defined in: [types/index.ts:18](https://github.com/green-api/whatsapp-chatgpt-js/blob/a8d23283a95688db13d271291301a016d80fdc7a/src/types/index.ts#L18)
+Defined in: [types/index.ts:18](https://github.com/green-api/whatsapp-chatgpt-js/blob/1fdcaadfd7062f356e7347966f180de931a2fd84/src/types/index.ts#L18)
 
 System message to set assistant behavior
 
@@ -70,6 +70,16 @@ System message to set assistant behavior
 
 > `optional` **temperature**: `number`
 
-Defined in: [types/index.ts:21](https://github.com/green-api/whatsapp-chatgpt-js/blob/a8d23283a95688db13d271291301a016d80fdc7a/src/types/index.ts#L21)
+Defined in: [types/index.ts:21](https://github.com/green-api/whatsapp-chatgpt-js/blob/1fdcaadfd7062f356e7347966f180de931a2fd84/src/types/index.ts#L21)
 
 Temperature for response generation
+
+***
+
+### voiceCalls?
+
+> `optional` **voiceCalls**: [`VoiceCallsConfig`](VoiceCallsConfig.md)
+
+Defined in: [types/index.ts:27](https://github.com/green-api/whatsapp-chatgpt-js/blob/1fdcaadfd7062f356e7347966f180de931a2fd84/src/types/index.ts#L27)
+
+Voice calls with an OpenAI Realtime model. Without it the bot does not answer calls
