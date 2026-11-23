@@ -260,7 +260,7 @@ interface VoiceCallsConfig {
     /** Longest call in seconds (default: 600) */
     maxCallSeconds?: number;
 
-    /** Detection of the caller's speech: threshold (0.7), prefixPaddingMs (400), silenceDurationMs (800),
+    /** Detection of the caller's speech: threshold (0.5), prefixPaddingMs (400), silenceDurationMs (800),
      * noiseReduction ("near_field", "far_field" or null) */
     vad?: VoiceActivityConfig;
 }

@@ -258,7 +258,7 @@ interface VoiceCallsConfig {
     /** Максимальная длительность звонка в секундах (по умолчанию: 600) */
     maxCallSeconds?: number;
 
-    /** Распознавание речи собеседника: threshold (0.7), prefixPaddingMs (400), silenceDurationMs (800),
+    /** Распознавание речи собеседника: threshold (0.5), prefixPaddingMs (400), silenceDurationMs (800),
      * noiseReduction ("near_field", "far_field" или null) */
     vad?: VoiceActivityConfig;
 }

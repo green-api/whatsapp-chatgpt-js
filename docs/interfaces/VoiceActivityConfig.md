@@ -48,4 +48,4 @@ Silence that ends the caller's turn, in milliseconds. Default: 800
 
 Defined in: [types/index.ts:61](https://github.com/green-api/whatsapp-chatgpt-js/blob/1fdcaadfd7062f356e7347966f180de931a2fd84/src/types/index.ts#L61)
 
-Speech threshold from 0 to 1, higher needs louder speech. Default: 0.7
+Speech threshold from 0 to 1, higher needs louder speech. Default: 0.5

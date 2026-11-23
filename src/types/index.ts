@@ -57,7 +57,7 @@ export interface VoiceCallsConfig {
  * Settings of the server voice activity detection.
  */
 export interface VoiceActivityConfig {
-	/** Speech threshold from 0 to 1, higher needs louder speech. Default: 0.7 */
+	/** Speech threshold from 0 to 1, higher needs louder speech. Default: 0.5 */
 	threshold?: number;
 
 	/** Audio kept before the detected speech, in milliseconds. Default: 400 */

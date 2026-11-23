@@ -5,7 +5,7 @@ export const VOICE_DEFAULTS = {
 	maxCallSeconds: 600,
 	answerTimeoutMs: 60000,
 	vad: {
-		threshold: 0.7,
+		threshold: 0.5,
 		prefixPaddingMs: 400,
 		silenceDurationMs: 800,
 		noiseReduction: "near_field",
